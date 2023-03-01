@@ -3,10 +3,10 @@
 ## Summary
 
 Usage
+
 ```
 :Telescope advanced_git_search {function_name}
 ```
-
 
 ### `diff_file_branch`
 
@@ -20,9 +20,8 @@ Opens a Telescope window with a list of local branches
 
 Opens a Telescope window with a list of previous commit logs with respect to selected lines
 
-Note: First you have to select the lines in visual mode, then go back to normal 
+Note: First you have to select the lines in visual mode, then go back to normal
 mode and execute this command.
-
 
 - `<CR>` opens a diff for the current file with the selected commit
 - `<C-o>` opens a the selected commit in the browser
@@ -67,8 +66,12 @@ With packer
     {
         "aaronhallaert/ts-advanced-git-search.nvim",
         config = function()
-            -- load the extension in telescope
             require("telescope").load_extension("advanced_git_search")
         end,
-    }
+        dependencies = {
+            "nvim-telescope/telescope.nvim",
+            -- to show diff splits and open commits in browser
+            "tpope/vim-fugitive",
+        },
+    },
 ```
