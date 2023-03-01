@@ -1,4 +1,4 @@
-local func = require("functions")
+local func = require("advanced_git_search")
 
 return require("telescope").register_extension({
     exports = {

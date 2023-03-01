@@ -1,4 +1,4 @@
-local utils = require("utils")
+local utils = require("advanced_git_search.utils")
 local finders = require("telescope.finders")
 
 M = {}

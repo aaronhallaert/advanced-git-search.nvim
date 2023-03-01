@@ -1,6 +1,6 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
-local gu = require("git-utils")
+local gu = require("advanced_git_search.git_utils")
 
 local previewers = require("telescope.previewers")
 local pickers = require("telescope.pickers")
