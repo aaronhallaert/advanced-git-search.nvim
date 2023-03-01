@@ -259,7 +259,7 @@ M.checkout_reflog = function()
 end
 
 local git_functions = {
-    { value = "Find in log content", func = M.diff_git_log_content },
+    { value = "Find in log content", func = M.search_log_content },
     { value = "Diff file with branch", func = M.diff_branch_file },
     { value = "Diff file with previous commit", func = M.diff_commit_file },
     { value = "Diff file with selected line history", func = M.diff_commit_line },
