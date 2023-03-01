@@ -1,6 +1,7 @@
 local utils = require("advanced_git_search.utils")
 local finders = require("telescope.finders")
 
+local last_prompt = nil
 M = {}
 
 local split_query_from_author = function(query)
@@ -47,6 +48,7 @@ local git_log_entry_maker = function(entry)
             date = date,
             author = author,
             message = message,
+            prompt = last_prompt,
         },
     }
 end
@@ -57,6 +59,7 @@ M.git_log_grepper_on_content = function()
             "git",
             "log",
             "--format=%C(auto)%h %as %C(green)%an _ %Creset %s",
+            '--since="1 year ago"',
         }
 
         local prompt, author = split_query_from_author(query)
@@ -66,10 +69,11 @@ M.git_log_grepper_on_content = function()
         end
 
         if prompt and prompt ~= "" then
-            table.insert(command, "-S")
-            table.insert(command, '"' .. prompt .. '"')
+            table.insert(command, "-G" .. prompt)
+            table.insert(command, "--pickaxe-all")
         end
 
+        last_prompt = prompt
         return vim.tbl_flatten(command)
     end, git_log_entry_maker)
 end
@@ -97,6 +101,7 @@ M.git_log_grepper_on_location = function(filename, start_line, end_line)
             table.insert(command, "--grep=" .. prompt)
         end
 
+        last_prompt = prompt
         return vim.tbl_flatten(command)
     end, git_log_entry_maker)
 end
@@ -124,6 +129,7 @@ M.git_log_grepper_on_file = function(filename)
         table.insert(command, "--follow")
         table.insert(command, filename)
 
+        last_prompt = prompt
         return vim.tbl_flatten(command)
     end, git_log_entry_maker)
 end

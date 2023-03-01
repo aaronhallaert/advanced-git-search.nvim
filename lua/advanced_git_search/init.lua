@@ -128,12 +128,20 @@ M.search_log_content = function()
             previewer = previewers.new_termopen_previewer({
                 get_command = function(entry)
                     local commit_hash = entry.opts.commit_hash
-                    return {
+                    local prompt = entry.opts.prompt
+                    local command = {
                         "git",
                         "diff",
                         string.format("%s~", commit_hash),
                         commit_hash,
                     }
+
+                    if prompt and prompt ~= "" then
+                        table.insert(command, "-G")
+                        table.insert(command, prompt)
+                    end
+
+                    return command
                 end,
             }),
             -- sorter = sorters.highlighter_only(),
