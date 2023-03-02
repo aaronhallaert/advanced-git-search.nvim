@@ -89,6 +89,7 @@ M.git_log_grepper_on_location = function(bufnr, start_line, end_line)
             "git",
             "log",
             location,
+            "--no-patch",
             "--format=%C(auto)%h %as %C(green)%an _ %Creset %s",
         }
 
