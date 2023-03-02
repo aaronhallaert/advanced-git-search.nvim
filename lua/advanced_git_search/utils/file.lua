@@ -35,7 +35,7 @@ end
 
 M.git_relative_path = function(bufnr)
     local abs_filename = M.absolute_path(bufnr)
-    local git_dir = M.find_first_ancestor(abs_filename, ".git")
+    local git_dir = M.find_first_ancestor_dir(abs_filename, ".git")
 
     if git_dir and git_dir ~= "" then
         git_dir = utils.escape_chars(git_dir .. "/")
@@ -232,6 +232,14 @@ end
 function M.find_first_ancestor(startpath, pattern)
     return M.search_ancestors(startpath, function(path)
         if M.path.is_file(M.path.join(path, pattern)) then
+            return path
+        end
+    end)
+end
+
+function M.find_first_ancestor_dir(startpath, pattern)
+    return M.search_ancestors(startpath, function(path)
+        if M.path.is_dir(M.path.join(path, pattern)) then
             return path
         end
     end)

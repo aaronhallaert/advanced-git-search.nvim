@@ -140,7 +140,7 @@ M.git_log_grepper_on_file = function(bufnr)
 end
 
 local determine_historic_file_name = function(commit_hash, bufnr)
-    local current_file_name = file.git_relative_path(bufnr)
+    local current_file_name = file.relative_path(bufnr)
 
     local command = "git log -M --diff-filter=R --follow --name-status --summary "
         .. commit_hash
@@ -154,8 +154,10 @@ local determine_historic_file_name = function(commit_hash, bufnr)
 
     output = string.gsub(output, "\n", "")
     if output == "" then
-        output = current_file_name
+        output = file.git_relative_path(bufnr)
     end
+
+    -- output is relative to git root
     return output
 end
 
