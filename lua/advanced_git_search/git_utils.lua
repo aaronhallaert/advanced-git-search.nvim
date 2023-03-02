@@ -55,7 +55,9 @@ local git_log_entry_maker = function(entry)
     }
 end
 
-M.git_log_grepper_on_content = function()
+M.git_log_grepper_on_content = function(opts)
+    opts = opts or {}
+
     return finders.new_job(function(query)
         local command = {
             "git",
@@ -73,6 +75,13 @@ M.git_log_grepper_on_content = function()
         if prompt and prompt ~= "" then
             table.insert(command, "-G" .. prompt)
             table.insert(command, "--pickaxe-all")
+            -- table.insert(command, [[-G']] .. prompt .. [[']])
+        end
+
+        if opts.bufnr then
+            table.insert(command, "--follow")
+            local filename = file.relative_path(opts.bufnr)
+            table.insert(command, filename)
         end
 
         last_prompt = prompt

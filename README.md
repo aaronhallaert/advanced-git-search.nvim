@@ -31,6 +31,8 @@ the author name.
 
 Opens a Telescope window with a list of local branches
 
+_Grep behaviour_: filter on branch name.
+
 #### _Keymaps_
 
 - `<CR>` opens a diff for the current file with the selected branch
@@ -39,6 +41,8 @@ Opens a Telescope window with a list of local branches
 
 Opens a Telescope window with a list of previous commit logs with respect to
 selected lines
+
+_Grep behaviour_: filter on commit message.
 
 Note: First you have to select the lines in visual mode, then go back to normal
 mode and execute this command.
@@ -68,7 +72,9 @@ vim.api.nvim_set_keymap(
 ### 3. diff_commit_file
 
 Opens a Telescope window with a list of git commits that changed the
-current file (renames included)
+current file (renames included).
+
+_Grep behaviour_: filter on commit message.
 
 #### _Keymaps_
 
@@ -78,15 +84,28 @@ current file (renames included)
 
 ### 4. search_log_content
 
-Opens a Telescope window with a list of previous commit logs filtered on the
-`content` of the commits.
+Opens a Telescope window with a list of all previous commit.
+
+_Grep behaviour_: filter on added, updated or removed code (log content: `-G` option in git).
 
 #### _Keymaps_
 
 - `<CR>` opens a diff for the current file with the selected commit
 - `<C-o>` opens the selected commit in the browser
 
-### 5. checkout_reflog
+### 5. search_log_content_file
+
+Opens a Telescope window with a list of git commits that changed the
+current file (renames included).
+
+_Grep behaviour_: filter on added, updated or removed code (log content: `-G` option in git).
+
+#### _Keymaps_
+
+- `<CR>` opens a diff for the current file with the selected commit
+- `<C-o>` opens the selected commit in the browser
+
+### 6. checkout_reflog
 
 Opens a Telescope window with all reflog entries
 
@@ -94,7 +113,7 @@ Opens a Telescope window with all reflog entries
 
 - `<CR>` checkout the reflog entry
 
-### 6. show_custom_functions
+### 7. show_custom_functions
 
 A telescope picker for all functions above.
 
