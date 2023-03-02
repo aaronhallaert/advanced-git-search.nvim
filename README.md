@@ -46,19 +46,9 @@ mode and execute this command.
 - `<CR>` opens a diff for the current file with the selected commit
 - `<C-o>` opens a the selected commit in the browser
 
-### 3. search_log_content
+### 3. diff_commit_file
 
-Opens a Telescope window with a list of previous commit logs filtered on the
-`content` of the commits.
-
-#### _Keymaps_
-
-- `<CR>` opens a diff for the current file with the selected commit
-- `<C-o>` opens a the selected commit in the browser
-
-### 4. diff_commit_file
-
-Opens a Telescope window with a list of git commits which changed the
+Opens a Telescope window with a list of git commits that changed the
 current file (renames included)
 
 #### _Keymaps_
@@ -67,13 +57,23 @@ current file (renames included)
 - `<C-e>` Opens an entire git diff of the selected commit
 - `<C-o>` Open the selected commit in the browser
 
+### 4. search_log_content
+
+Opens a Telescope window with a list of previous commit logs filtered on the
+`content` of the commits.
+
+#### _Keymaps_
+
+- `<CR>` opens a diff for the current file with the selected commit
+- `<C-o>` opens the selected commit in the browser
+
 ### 5. checkout_reflog
 
 Opens a Telescope window with all reflog entries
 
 #### _Keymaps_
 
-- `<CR>` checkout on the reflog entry
+- `<CR>` checkout the reflog entry
 
 ### 6. show_custom_functions
 
@@ -96,3 +96,9 @@ With packer
         },
     },
 ```
+
+### Prerequisites
+
+- git
+- vim-fugitive
+- telescope.nvim
