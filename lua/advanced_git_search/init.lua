@@ -10,6 +10,12 @@ local finders = require("telescope.finders")
 
 M = {}
 
+-- Map a key to both insert and normal modes
+local function omnimap(map_func, key, handler)
+    map_func('i', key, handler)
+    map_func('n', key, handler)
+end
+
 --- Opens a Telescope window with a list of local branches
 ---
 --- <CR> opens a diff for the current file with the selected branch
@@ -169,7 +175,7 @@ M.diff_commit_file = function()
             previewer = gu.git_diff_previewer_file(bufnr),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
-                map("i", "<CR>", function(prompt_bufnr)
+                omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
@@ -177,7 +183,7 @@ M.diff_commit_file = function()
 
                     gu.open_diff_view(commit_hash, old_file_name)
                 end)
-                map("i", "<C-e>", function(prompt_bufnr)
+                omnimap(map, "<C-e>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
@@ -197,7 +203,7 @@ M.diff_commit_file = function()
                     vim.api.nvim_buf_set_option(buf_handle, "modifiable", true)
                     vim.api.nvim_chan_send(jobID, table.concat(command, " "))
                 end)
-                map("i", "<C-o>", function(prompt_bufnr)
+                omnimap(map, "<C-o>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
@@ -221,7 +227,7 @@ M.checkout_reflog = function()
             finder = finders.new_oneshot_job({ "git", "reflog", "--date=iso" }),
             sorter = sorters.get_fuzzy_file(),
             attach_mappings = function(_, map)
-                map("i", "<CR>", function(prompt_bufnr)
+                omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local reflog_entry = selection.value
@@ -276,7 +282,7 @@ M.show_custom_functions = function()
             end)),
             sorter = sorters.get_fuzzy_file(),
             attach_mappings = function(_, map)
-                map("i", "<CR>", function(prompt_bufnr)
+                omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     execute_git_function(selection.value)
