@@ -70,7 +70,7 @@ M.diff_commit_line = function()
     pickers
         .new({
             results_title = "Commits that affected the selected lines",
-            prompt_title = "Case-sensitive commit message",
+            prompt_title = "Commit message",
             finder = gu.git_log_grepper_on_location(relative_file_name, s_start, s_end),
             -- finder = finders.new_oneshot_job({'git', 'log', location}),
             previewer = previewers.new_termopen_previewer({
@@ -177,7 +177,7 @@ M.diff_commit_file = function()
     pickers
         .new({
             results_title = "Commits that affected this file (renamed files included)",
-            prompt_title = "Case-sensitive commit message",
+            prompt_title = "Commit message",
             finder = gu.git_log_grepper_on_file(filename),
             previewer = previewers.new_termopen_previewer({
                 get_command = function(entry)
