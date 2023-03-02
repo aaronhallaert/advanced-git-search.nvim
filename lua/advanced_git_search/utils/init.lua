@@ -27,4 +27,21 @@ M.split_string = function(inputstr, sep)
     return t
 end
 
+M.escape_chars = function(x)
+    return (
+        x:gsub("%%", "%%%%")
+            :gsub("^%^", "%%^")
+            :gsub("%$$", "%%$")
+            :gsub("%(", "%%(")
+            :gsub("%)", "%%)")
+            :gsub("%.", "%%.")
+            :gsub("%[", "%%[")
+            :gsub("%]", "%%]")
+            :gsub("%*", "%%*")
+            :gsub("%+", "%%+")
+            :gsub("%-", "%%-")
+            :gsub("%?", "%%?")
+        )
+end
+
 return M

@@ -1,5 +1,7 @@
+local file = require("advanced_git_search.utils.file")
 local utils = require("advanced_git_search.utils")
 local finders = require("telescope.finders")
+local previewers = require("telescope.previewers")
 
 local last_prompt = nil
 M = {}
@@ -78,7 +80,8 @@ M.git_log_grepper_on_content = function()
     end, git_log_entry_maker)
 end
 
-M.git_log_grepper_on_location = function(filename, start_line, end_line)
+M.git_log_grepper_on_location = function(bufnr, start_line, end_line)
+    local filename = file.relative_path(bufnr)
     local location = string.format("-L%d,%d:%s", start_line, end_line, filename)
 
     return finders.new_job(function(query)
@@ -106,7 +109,8 @@ M.git_log_grepper_on_location = function(filename, start_line, end_line)
     end, git_log_entry_maker)
 end
 
-M.git_log_grepper_on_file = function(filename)
+M.git_log_grepper_on_file = function(bufnr)
+    local filename = file.relative_path(bufnr)
     return finders.new_job(function(query)
         local command = {
             "git",
@@ -134,20 +138,9 @@ M.git_log_grepper_on_file = function(filename)
     end, git_log_entry_maker)
 end
 
---- open diff for current file
---- @param commit (string) commit or branch to diff with
-M.open_diff_view = function(
- commit, --[[optional]]
- file_name
-)
-    if file_name ~= nil and file_name ~= "" then
-        vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
-    else
-        vim.api.nvim_command(":Gvdiffsplit " .. commit)
-    end
-end
+local determine_historic_file_name = function(commit_hash, bufnr)
+    local current_file_name = file.git_relative_path(bufnr)
 
-M.determine_historic_file_name = function(commit_hash, current_file_name)
     local command = "git log -M --diff-filter=R --follow --name-status --summary "
         .. commit_hash
         .. ".. -- "
@@ -165,6 +158,35 @@ M.determine_historic_file_name = function(commit_hash, current_file_name)
     return output
 end
 
+M.git_diff_previewer_file = function(bufnr)
+    return previewers.new_termopen_previewer({
+        get_command = function(entry)
+            local commit_hash = entry.opts.commit_hash
+
+            local prev_commit = string.format("%s~", commit_hash)
+            return {
+                "git",
+                "diff",
+                prev_commit .. ":" .. determine_historic_file_name(prev_commit, bufnr),
+                commit_hash .. ":" .. determine_historic_file_name(commit_hash, bufnr),
+            }
+        end,
+    })
+end
+
+--- open diff for current file
+--- @param commit (string) commit or branch to diff with
+M.open_diff_view = function(
+ commit, --[[optional]]
+ file_name
+)
+    if file_name ~= nil and file_name ~= "" then
+        vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
+    else
+        vim.api.nvim_command(":Gvdiffsplit " .. commit)
+    end
+end
+
 --- returns the base branch of a branch (where fork_point is)
 M.base_branch = function()
     local command =
@@ -178,5 +200,7 @@ M.base_branch = function()
     output = string.gsub(output, "\n", "")
     return output
 end
+
+M.determine_historic_file_name = determine_historic_file_name
 
 return M
