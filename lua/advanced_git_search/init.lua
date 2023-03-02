@@ -1,7 +1,6 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local gu = require("advanced_git_search.git_utils")
-local file = require("advanced_git_search.utils.file")
 
 local previewers = require("telescope.previewers")
 local pickers = require("telescope.pickers")
@@ -17,7 +16,7 @@ M.diff_branch_file = function()
     -- local previewers = require('telescope.previewers')
     local current_branch = vim.fn.system("git branch --show-current")
     current_branch = string.gsub(current_branch, "\n", "")
-    local file_name = file.git_relative_path(vim.fn.bufnr())
+    local file_name = vim.fn.expand("%:~:.")
     pickers
         .new({
             results_title = "Local branches :: *" .. current_branch,
@@ -62,7 +61,8 @@ end
 --- <CR> opens a diff for the current file with the selected commit
 --- <C-o> opens a the selected commit in the browser
 M.diff_commit_line = function()
-    local bufnr = vim.fn.bufnr()
+    local file_name = vim.fn.expand("%")
+    local relative_file_name = vim.fn.expand("%:~:.")
     local s_start = vim.fn.getpos("'<")[2]
     local s_end = vim.fn.getpos("'>")[2]
 
@@ -71,9 +71,21 @@ M.diff_commit_line = function()
         .new({
             results_title = "Commits that affected the selected lines",
             prompt_title = "Commit message",
-            finder = gu.git_log_grepper_on_location(bufnr, s_start, s_end),
+            finder = gu.git_log_grepper_on_location(relative_file_name, s_start, s_end),
             -- finder = finders.new_oneshot_job({'git', 'log', location}),
-            previewer = gu.git_diff_previewer_file(bufnr),
+            previewer = previewers.new_termopen_previewer({
+                get_command = function(entry)
+                    local commit_hash = entry.opts.commit_hash
+                    return {
+                        "git",
+                        "diff",
+                        string.format("%s~", commit_hash),
+                        commit_hash,
+                        "--",
+                        file_name,
+                    }
+                end,
+            }),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 map("i", "<CR>", function(prompt_bufnr)
@@ -160,20 +172,33 @@ end
 -- <C-e> Opens an entire git diff of the selected commit
 -- <C-o> Open the selected commit in the browser
 M.diff_commit_file = function()
-    local bufnr = vim.fn.bufnr()
+    local filename = vim.fn.expand("%:~:.")
+
     pickers
         .new({
             results_title = "Commits that affected this file (renamed files included)",
             prompt_title = "Commit message",
-            finder = gu.git_log_grepper_on_file(bufnr),
-            previewer = gu.git_diff_previewer_file(bufnr),
+            finder = gu.git_log_grepper_on_file(filename),
+            previewer = previewers.new_termopen_previewer({
+                get_command = function(entry)
+                    local commit_hash = entry.opts.commit_hash
+
+                    local prev_commit = string.format("%s~", commit_hash)
+                    return {
+                        "git",
+                        "diff",
+                        prev_commit .. ":" .. gu.determine_historic_file_name(prev_commit, filename),
+                        commit_hash .. ":" .. gu.determine_historic_file_name(commit_hash, filename),
+                    }
+                end,
+            }),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 map("i", "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
-                    local old_file_name = gu.determine_historic_file_name(commit_hash, bufnr)
+                    local old_file_name = gu.determine_historic_file_name(commit_hash, filename)
 
                     gu.open_diff_view(commit_hash, old_file_name)
                 end)
