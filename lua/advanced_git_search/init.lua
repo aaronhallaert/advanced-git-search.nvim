@@ -48,7 +48,7 @@ M.diff_branch_file = function()
                 end,
             }),
             attach_mappings = function(_, map)
-                map("i", "<CR>", function(prompt_bufnr)
+                omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local branch = selection.value
@@ -82,14 +82,14 @@ M.diff_commit_line = function()
             previewer = gu.git_diff_previewer_file(bufnr),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
-                map("i", "<CR>", function(prompt_bufnr)
+                omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
 
                     gu.open_diff_view(commit_hash)
                 end)
-                map("i", "<C-o>", function(prompt_bufnr)
+                omnimap(map, "<C-o>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
 
@@ -140,14 +140,14 @@ M.search_log_content = function()
             }),
             -- sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
-                map("i", "<CR>", function(prompt_bufnr)
+                omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
 
                     gu.open_diff_view(commit_hash)
                 end)
-                map("i", "<C-o>", function(prompt_bufnr)
+                omnimap(map, "<C-o>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
 
