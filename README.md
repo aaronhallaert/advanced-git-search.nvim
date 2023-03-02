@@ -84,7 +84,7 @@ A telescope picker for all functions above.
 With packer
 
 ```lua
-    {
+    use ({
         "aaronhallaert/ts-advanced-git-search.nvim",
         config = function()
             require("telescope").load_extension("advanced_git_search")
@@ -94,7 +94,7 @@ With packer
             -- to show diff splits and open commits in browser
             "tpope/vim-fugitive",
         },
-    },
+    })
 ```
 
 ### Prerequisites
