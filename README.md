@@ -40,6 +40,23 @@ selected lines
 
 Note: First you have to select the lines in visual mode, then go back to normal
 mode and execute this command.
+To make this a bit easier, you can wrap it in a user command and define a keybind:
+
+```lua
+vim.api.nvim_create_user_command(
+    "DiffCommitLine",
+    "lua require('telescope').extensions.advanced_git_search.diff_commit_line()",
+    { range = true }
+)
+
+vim.api.nvim_set_keymap(
+    "v",
+    "<leader>dcl",
+    ":DiffCommitLine<CR>",
+    { noremap = true }
+)
+```
+
 
 #### _Keymaps_
 
