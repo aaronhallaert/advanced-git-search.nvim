@@ -2,6 +2,8 @@
 
 ## 🖥️ Usage
 
+[![Demo](https://img.youtube.com/vi/bO0uYLlHtYo/0.jpg)](https://www.youtube.com/watch?v=bO0uYLlHtYo)
+
 ### 📖 Open a picker
 
 ```vim
