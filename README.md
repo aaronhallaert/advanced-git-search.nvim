@@ -81,15 +81,30 @@ A telescope picker for all functions above.
 
 ## ⚙️ Installation
 
-With packer
+With Lazy
 
 ```lua
-    use ({
+    {
         "aaronhallaert/ts-advanced-git-search.nvim",
         config = function()
             require("telescope").load_extension("advanced_git_search")
         end,
         dependencies = {
+            "nvim-telescope/telescope.nvim",
+            -- to show diff splits and open commits in browser
+            "tpope/vim-fugitive",
+        },
+    }
+```
+With Packer
+
+```lua
+    use({
+        "aaronhallaert/ts-advanced-git-search.nvim",
+        config = function()
+            require("telescope").load_extension("advanced_git_search")
+        end,
+        requires = {
             "nvim-telescope/telescope.nvim",
             -- to show diff splits and open commits in browser
             "tpope/vim-fugitive",
