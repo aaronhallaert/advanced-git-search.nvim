@@ -32,12 +32,19 @@ end
 
 local git_log_entry_maker = function(entry)
     -- dce3b0743 2022-09-09 author _ message
+    -- FIXME: will break if author contains _
     local split = utils.split_string(entry, "_")
     local attrs = utils.split_string(split[1])
     local hash = attrs[1]
     local date = attrs[2]
     local author = attrs[3]
+    -- join split from second element
     local message = split[2]
+    if #split > 2 then
+        for i = 3, #split do
+            message = message .. "_" .. split[i]
+        end
+    end
 
     return {
         value = entry,
@@ -63,7 +70,6 @@ M.git_log_grepper_on_content = function(opts)
             "git",
             "log",
             "--format=%C(auto)%h %as %C(green)%an _ %Creset %s",
-            '--since="1 year ago"',
         }
 
         local prompt, author = split_query_from_author(query)
