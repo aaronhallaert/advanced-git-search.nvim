@@ -1,0 +1,14 @@
+name: Lint
+
+on: [pull_request]
+
+jobs:
+    lint:
+        name: Luacheck
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Luacheck linter
+              uses: lunarmodules/luacheck@v0
+              with:
+                  args: lua/ --globals vim

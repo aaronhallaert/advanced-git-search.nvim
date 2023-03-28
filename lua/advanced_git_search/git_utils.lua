@@ -4,7 +4,7 @@ local finders = require("telescope.finders")
 local previewers = require("telescope.previewers")
 
 local last_prompt = nil
-M = {}
+local M = {}
 
 local split_query_from_author = function(query)
     local author = nil
@@ -185,8 +185,12 @@ M.git_diff_previewer_file = function(bufnr)
             return {
                 "git",
                 "diff",
-                prev_commit .. ":" .. determine_historic_file_name(prev_commit, bufnr),
-                commit_hash .. ":" .. determine_historic_file_name(commit_hash, bufnr),
+                prev_commit
+                    .. ":"
+                    .. determine_historic_file_name(prev_commit, bufnr),
+                commit_hash
+                    .. ":"
+                    .. determine_historic_file_name(commit_hash, bufnr),
             }
         end,
     })
@@ -195,8 +199,8 @@ end
 --- open diff for current file
 --- @param commit (string) commit or branch to diff with
 M.open_diff_view = function(
- commit, --[[optional]]
- file_name
+    commit, --[[optional]]
+    file_name
 )
     if file_name ~= nil and file_name ~= "" then
         vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
@@ -207,10 +211,13 @@ end
 
 --- returns the base branch of a branch (where fork_point is)
 M.base_branch = function()
-    local command =
-    'git show-branch | sed "s/].*//" | grep "*" | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed "s/^.*\\[//"'
-    -- local command =
-    --     'git show-branch | sed "s/].*//" | grep "*" | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed "s/^.*[//"'
+    local command = [[git show-branch |\
+      sed "s/].*//" |\
+      grep "*" |\
+      grep -v "$(git rev-parse --abbrev-ref HEAD)" |\
+      head -n1 |\
+      sed "s/^.*\\[//"]]
+
     local handle = io.popen(command)
     local output = handle:read("*a")
     handle:close()
