@@ -7,11 +7,8 @@ jobs:
         name: Luacheck
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-            - name: Setup
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install luarocks
-                  sudo luarocks install luacheck
-            - name: Lint
-              run: luacheck lua/ --globals vim
+            - uses: actions/checkout@v3
+            - name: Luacheck linter
+              uses: lunarmodules/luacheck@v0
+              with:
+                  args: lua/ --globals vim
