@@ -9,5 +9,6 @@ return require("telescope").register_extension({
         search_log_content = func.search_log_content,
         search_log_content_file = func.search_log_content_file,
         show_custom_functions = func.show_custom_functions,
+        changed_on_branch = func.changed_on_branch,
     },
 })

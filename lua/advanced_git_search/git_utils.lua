@@ -219,6 +219,16 @@ M.base_branch = function()
     return output
 end
 
+M.current_branch = function()
+    local command = "git branch --show-current"
+    local handle = io.popen(command)
+    local output = handle:read("*a")
+    handle:close()
+
+    output = string.gsub(output, "\n", "")
+    return output
+end
+
 M.determine_historic_file_name = determine_historic_file_name
 
 return M

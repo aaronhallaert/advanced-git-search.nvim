@@ -105,7 +105,30 @@ _Grep behaviour_: filter on added, updated or removed code (log content: `-G` op
 - `<CR>` opens a diff for the current file with the selected commit
 - `<C-o>` opens the selected commit in the browser
 
-### 6. checkout_reflog
+### 6. changed_on_branch
+
+Opens a Telescope window with a list of changed files on the current branch (including staged files).
+The fork point of the current branch is determined with the following command:
+
+```sh
+git show-branch | \
+    sed "s/].*//" | \
+    grep "*" | \
+    grep -v "$(git rev-parse --abbrev-ref HEAD)" | \
+    head -n1 | \
+    sed "s/^.*\\[//"
+```
+
+Note: this only works if there is already a commit on the current branch, otherwise the base branch can not be detected.
+
+_Grep behaviour_: filter on filename.
+
+#### _Keymaps_
+
+- `<CR>` opens the selected file.
+- `<C-e>` opens diff of the selected file with base branch.
+
+### 7. checkout_reflog
 
 Opens a Telescope window with all reflog entries
 
@@ -113,7 +136,7 @@ Opens a Telescope window with all reflog entries
 
 - `<CR>` checkout the reflog entry
 
-### 7. show_custom_functions
+### 8. show_custom_functions
 
 A telescope picker for all functions above.
 
