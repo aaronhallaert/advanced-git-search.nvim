@@ -2,8 +2,6 @@ changelog:
   exclude:
     labels:
       - ignore-for-release
-    authors:
-      - octocat
   categories:
     - title: Breaking Changes 🛠
       labels:
