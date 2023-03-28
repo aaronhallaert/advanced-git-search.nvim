@@ -200,7 +200,9 @@ function M.root_pattern(...)
     local patterns = vim.tbl_flatten({ ... })
     local function matcher(path)
         for _, pattern in ipairs(patterns) do
-            for _, p in ipairs(vim.fn.glob(M.path.join(path, pattern), true, true)) do
+            for _, p in
+                ipairs(vim.fn.glob(M.path.join(path, pattern), true, true))
+            do
                 if M.path.exists(p) then
                     return path
                 end
@@ -239,7 +241,10 @@ end
 
 function M.find_first_ancestor_dir_or_file(startpath, pattern)
     return M.search_ancestors(startpath, function(path)
-        if M.path.is_file(M.path.join(path, pattern)) or M.path.is_dir(M.path.join(path, pattern)) then
+        if
+            M.path.is_file(M.path.join(path, pattern))
+            or M.path.is_dir(M.path.join(path, pattern))
+        then
             return path
         end
     end)

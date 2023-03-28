@@ -41,7 +41,7 @@ M.escape_chars = function(x)
             :gsub("%+", "%%+")
             :gsub("%-", "%%-")
             :gsub("%?", "%%?")
-        )
+    )
 end
 
 return M
