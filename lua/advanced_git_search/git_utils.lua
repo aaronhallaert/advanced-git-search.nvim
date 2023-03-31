@@ -202,10 +202,31 @@ M.open_diff_view = function(
     commit, --[[optional]]
     file_name
 )
+    if
+        vim.fn.exists(":DiffviewOpen") == 0
+        and vim.fn.exists(":Gvdiffsplit") == 0
+    then
+        vim.notify(
+            "Could not open diff: diffview.nvim or git-fugitive is not installed",
+            vim.log.levels.ERROR,
+            { title = "Advanced Git Search" }
+        )
+    end
+
     if file_name ~= nil and file_name ~= "" then
-        vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
+        if vim.fn.exists(":DiffviewOpen") > 0 then
+            vim.api.nvim_command(
+                ":DiffviewOpen " .. commit .. " -- " .. file_name
+            )
+        elseif vim.fn.exists(":Gvdiffsplit") > 0 then
+            vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
+        end
     else
-        vim.api.nvim_command(":Gvdiffsplit " .. commit)
+        if vim.fn.exists(":DiffviewOpen") > 0 then
+            vim.api.nvim_command(":DiffviewOpen " .. commit)
+        elseif vim.fn.exists(":Gvdiffsplit") > 0 then
+            vim.api.nvim_command(":Gvdiffsplit " .. commit)
+        end
     end
 end
 

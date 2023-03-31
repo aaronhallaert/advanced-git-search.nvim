@@ -63,7 +63,6 @@ vim.api.nvim_set_keymap(
 )
 ```
 
-
 #### _Keymaps_
 
 - `<CR>` opens a diff for the current file with the selected commit
@@ -154,9 +153,13 @@ With Lazy
             "nvim-telescope/telescope.nvim",
             -- to show diff splits and open commits in browser
             "tpope/vim-fugitive",
+            -- OPTIONAL: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
         },
     }
 ```
+
 With Packer
 
 ```lua
@@ -169,6 +172,9 @@ With Packer
             "nvim-telescope/telescope.nvim",
             -- to show diff splits and open commits in browser
             "tpope/vim-fugitive",
+            -- OPTIONAL: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
         },
     })
 ```
@@ -177,4 +183,5 @@ With Packer
 
 - git
 - vim-fugitive
+- sindrets/diffview.nvim
 - telescope.nvim
