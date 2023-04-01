@@ -63,7 +63,6 @@ vim.api.nvim_set_keymap(
 )
 ```
 
-
 #### _Keymaps_
 
 - `<CR>` opens a diff for the current file with the selected commit
@@ -149,14 +148,28 @@ With Lazy
         "aaronhallaert/advanced-git-search.nvim",
         config = function()
             require("telescope").load_extension("advanced_git_search")
+
+            require("telescope").setup{
+                -- move this to the place where you call the telescope setup function
+                extensions = {
+                    advanced_git_search = {
+                        -- fugitive or diffview
+                        diff_plugin = "fugitive",
+                    }
+                }
+            }
         end,
         dependencies = {
             "nvim-telescope/telescope.nvim",
             -- to show diff splits and open commits in browser
             "tpope/vim-fugitive",
+            -- OPTIONAL: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
         },
     }
 ```
+
 With Packer
 
 ```lua
@@ -164,11 +177,24 @@ With Packer
         "aaronhallaert/advanced-git-search.nvim",
         config = function()
             require("telescope").load_extension("advanced_git_search")
+
+            require("telescope").setup{
+                -- move this to the place where you call the telescope setup function
+                extensions = {
+                    advanced_git_search = {
+                        -- fugitive or diffview
+                        diff_plugin = "fugitive",
+                    }
+                }
+            }
         end,
         requires = {
             "nvim-telescope/telescope.nvim",
             -- to show diff splits and open commits in browser
             "tpope/vim-fugitive",
+            -- OPTIONAL: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
         },
     })
 ```
@@ -177,4 +203,5 @@ With Packer
 
 - git
 - vim-fugitive
+- sindrets/diffview.nvim
 - telescope.nvim

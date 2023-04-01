@@ -2,6 +2,7 @@ local file = require("advanced_git_search.utils.file")
 local utils = require("advanced_git_search.utils")
 local finders = require("telescope.finders")
 local previewers = require("telescope.previewers")
+local config = require("advanced_git_search.utils.config")
 
 local last_prompt = nil
 local M = {}
@@ -202,10 +203,22 @@ M.open_diff_view = function(
     commit, --[[optional]]
     file_name
 )
+    local diff_plugin = config.diff_plugin()
+
     if file_name ~= nil and file_name ~= "" then
-        vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
+        if diff_plugin == "diffview" then
+            vim.api.nvim_command(
+                ":DiffviewOpen " .. commit .. " -- " .. file_name
+            )
+        elseif diff_plugin == "fugitive" then
+            vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
+        end
     else
-        vim.api.nvim_command(":Gvdiffsplit " .. commit)
+        if diff_plugin == "diffview" then
+            vim.api.nvim_command(":DiffviewOpen " .. commit)
+        elseif diff_plugin == "fugitive" then
+            vim.api.nvim_command(":Gvdiffsplit " .. commit)
+        end
     end
 end
 
