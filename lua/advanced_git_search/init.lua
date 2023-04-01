@@ -42,7 +42,7 @@ M.changed_on_branch = function()
             sorter = sorters.get_fuzzy_file(),
             previewer = previewers.new_termopen_previewer({
                 get_command = function(entry)
-                    return {
+                    return gu.git_diff_command({
                         "git",
                         "diff",
                         "--diff-filter=ACMR",
@@ -51,7 +51,7 @@ M.changed_on_branch = function()
                         gu.base_branch(),
                         "--",
                         entry.value,
-                    }
+                    })
                 end,
             }),
             attach_mappings = function(_, map)
@@ -91,13 +91,13 @@ M.diff_branch_file = function()
                 get_command = function(entry)
                     local branch = entry.value
 
-                    return {
+                    return gu.git_diff_command({
                         "git",
                         "diff",
                         branch,
                         "--",
                         file_name,
-                    }
+                    })
                 end,
             }),
             attach_mappings = function(_, map)
@@ -183,12 +183,12 @@ M.search_log_content = function()
                 get_command = function(entry)
                     local commit_hash = entry.opts.commit_hash
                     local prompt = entry.opts.prompt
-                    local command = {
+                    local command = gu.git_diff_command({
                         "git",
                         "diff",
                         string.format("%s~", commit_hash),
                         commit_hash,
-                    }
+                    })
 
                     if prompt and prompt ~= "" then
                         table.insert(command, "-G")
@@ -242,12 +242,12 @@ M.search_log_content_file = function()
                 get_command = function(entry)
                     local commit_hash = entry.opts.commit_hash
                     local prompt = entry.opts.prompt
-                    local command = {
+                    local command = gu.git_diff_command({
                         "git",
                         "diff",
                         string.format("%s~", commit_hash),
                         commit_hash,
-                    }
+                    })
 
                     if prompt and prompt ~= "" then
                         table.insert(command, "-G")
