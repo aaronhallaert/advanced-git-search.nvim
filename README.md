@@ -148,6 +148,16 @@ With Lazy
         "aaronhallaert/advanced-git-search.nvim",
         config = function()
             require("telescope").load_extension("advanced_git_search")
+
+            require("telescope").setup{
+                -- move this to the place where you call the telescope setup function
+                extensions = {
+                    advanced_git_search = {
+                        -- fugitive or diffview
+                        diff_plugin = "fugitive",
+                    }
+                }
+            }
         end,
         dependencies = {
             "nvim-telescope/telescope.nvim",
@@ -167,6 +177,16 @@ With Packer
         "aaronhallaert/advanced-git-search.nvim",
         config = function()
             require("telescope").load_extension("advanced_git_search")
+
+            require("telescope").setup{
+                -- move this to the place where you call the telescope setup function
+                extensions = {
+                    advanced_git_search = {
+                        -- fugitive or diffview
+                        diff_plugin = "fugitive",
+                    }
+                }
+            }
         end,
         requires = {
             "nvim-telescope/telescope.nvim",

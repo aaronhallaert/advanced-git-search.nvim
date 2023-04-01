@@ -1,6 +1,10 @@
 local func = require("advanced_git_search")
+local config = require("advanced_git_search.utils.config")
 
 return require("telescope").register_extension({
+    setup = function(ext_config, _)
+        config.setup(ext_config)
+    end,
     exports = {
         checkout_reflog = func.checkout_reflog,
         diff_branch_file = func.diff_branch_file,

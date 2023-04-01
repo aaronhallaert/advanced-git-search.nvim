@@ -2,6 +2,7 @@ local file = require("advanced_git_search.utils.file")
 local utils = require("advanced_git_search.utils")
 local finders = require("telescope.finders")
 local previewers = require("telescope.previewers")
+local config = require("advanced_git_search.utils.config")
 
 local last_prompt = nil
 local M = {}
@@ -202,29 +203,20 @@ M.open_diff_view = function(
     commit, --[[optional]]
     file_name
 )
-    if
-        vim.fn.exists(":DiffviewOpen") == 0
-        and vim.fn.exists(":Gvdiffsplit") == 0
-    then
-        vim.notify(
-            "Could not open diff: diffview.nvim or git-fugitive is not installed",
-            vim.log.levels.ERROR,
-            { title = "Advanced Git Search" }
-        )
-    end
+    local diff_plugin = config.diff_plugin()
 
     if file_name ~= nil and file_name ~= "" then
-        if vim.fn.exists(":DiffviewOpen") > 0 then
+        if diff_plugin == "diffview" then
             vim.api.nvim_command(
                 ":DiffviewOpen " .. commit .. " -- " .. file_name
             )
-        elseif vim.fn.exists(":Gvdiffsplit") > 0 then
+        elseif diff_plugin == "fugitive" then
             vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
         end
     else
-        if vim.fn.exists(":DiffviewOpen") > 0 then
+        if diff_plugin == "diffview" then
             vim.api.nvim_command(":DiffviewOpen " .. commit)
-        elseif vim.fn.exists(":Gvdiffsplit") > 0 then
+        elseif diff_plugin == "fugitive" then
             vim.api.nvim_command(":Gvdiffsplit " .. commit)
         end
     end
