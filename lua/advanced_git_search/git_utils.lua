@@ -188,44 +188,159 @@ M.git_log_grepper_on_file = function(bufnr)
     end, git_log_entry_maker)
 end
 
-local determine_historic_file_name = function(commit_hash, bufnr)
-    local current_file_name = file.relative_path(bufnr)
+local previous_commit_hash = function(commit_hash)
+    local command = "git rev-parse " .. commit_hash .. "~"
+    local handle = io.popen(command)
+    local output = handle:read("*a")
+    handle:close()
 
-    local command = "git log -M --diff-filter=R --follow --name-status --summary "
+    output = string.gsub(output, "\n", "")
+    return output
+end
+
+local all_commit_hashes = function()
+    local command = "git rev-list --all"
+    local handle = io.popen(command)
+    local output = handle:read("*a")
+    handle:close()
+
+    return utils.split_string(output, "\n")
+end
+
+local all_commit_hashes_touching_file = function(git_relative_file_path)
+    local command = "cd "
+        .. file.git_dir()
+        .. " && git log --all --follow --pretty=format:'%H' -- "
+        .. git_relative_file_path
+    local handle = io.popen(command)
+    local output = handle:read("*a")
+    handle:close()
+
+    output = utils.split_string(output, "\n")
+    return output
+end
+
+local is_file_renamed = function(git_relative_file_path)
+    local command = "cd "
+        .. file.git_dir()
+        .. " && git log --all --follow --diff-filter=R --pretty=format:'%H' -- "
+        .. git_relative_file_path
+    local handle = io.popen(command)
+    local output = handle:read("*a")
+    handle:close()
+
+    output = utils.split_string(output, "\n")
+    return #output > 0
+end
+
+local file_exists_on_commit = function(commit_hash, git_relative_file_path)
+    local command = "cd "
+        .. file.git_dir()
+        .. " && git ls-tree --name-only "
         .. commit_hash
-        .. ".. -- "
-        .. current_file_name
-        .. " | grep ^R | tail -1 | cut -f2,2"
+        .. " -- "
+        .. git_relative_file_path
+    local handle = io.popen(command)
+    local output = handle:read("*a")
+    handle:close()
+
+    output = string.gsub(output, "\n", "")
+
+    return output ~= ""
+end
+
+local file_name_on_commit = function(commit_hash, git_relative_file_path)
+    if file_exists_on_commit(commit_hash, git_relative_file_path) then
+        return git_relative_file_path
+    end
+
+    -- FIXME: this is a very naive implementation, but it always returns the
+    -- correct filename for each commit (even if the commit didn't touch the file)
+
+    -- first find index in all_commit_hashes
+    local all_hashes = all_commit_hashes()
+    local index = 0
+    for i, hash in ipairs(all_hashes) do
+        -- compare on first 7 chars
+        if string.sub(hash, 1, 7) == string.sub(commit_hash, 1, 7) then
+            index = i
+            break
+        end
+    end
+
+    -- then find the first commit that has a different file name
+    local touched_hashes =
+        all_commit_hashes_touching_file(git_relative_file_path)
+    local last_touched_hash = nil
+    for i = index, #all_hashes do
+        local hash = all_hashes[i]
+        -- search the hash in touched_hashes
+        for _, touched_hash in ipairs(touched_hashes) do
+            if string.sub(touched_hash, 1, 7) == string.sub(hash, 1, 7) then
+                last_touched_hash = touched_hash
+                break
+            end
+        end
+
+        -- print("searching next")
+        if last_touched_hash ~= nil then
+            break
+        end
+    end
+
+    if last_touched_hash == nil then
+        return nil
+    end
+
+    local command = "cd "
+        .. file.git_dir()
+        .. " && "
+        .. "git --no-pager log -M --follow --pretty=format:'%H' --name-only "
+        .. last_touched_hash
+        .. "~.. -- "
+        .. git_relative_file_path
+        .. " | tail -1"
 
     local handle = io.popen(command)
     local output = handle:read("*a")
     handle:close()
 
     output = string.gsub(output, "\n", "")
-    if output == "" then
-        output = file.git_relative_path(bufnr)
-    end
 
-    -- output is relative to git root
     return output
 end
 
 M.git_diff_previewer_file = function(bufnr)
     return previewers.new_termopen_previewer({
         get_command = function(entry)
+            local filename_on_head = file.git_relative_path(bufnr)
+
             local commit_hash = entry.opts.commit_hash
 
-            local prev_commit = string.format("%s~", commit_hash)
-            return git_diff_command({
-                "git",
-                "diff",
-                prev_commit
-                    .. ":"
-                    .. determine_historic_file_name(prev_commit, bufnr),
-                commit_hash
-                    .. ":"
-                    .. determine_historic_file_name(commit_hash, bufnr),
-            })
+            local prev_commit = previous_commit_hash(commit_hash)
+            local curr_name = nil
+            local prev_name = nil
+
+            curr_name = file_name_on_commit(commit_hash, filename_on_head)
+            prev_name = file_name_on_commit(prev_commit, filename_on_head)
+
+            if prev_name ~= nil then
+                return git_diff_command({
+                    "git",
+                    "diff",
+                    prev_commit .. ":" .. prev_name,
+                    commit_hash .. ":" .. curr_name,
+                })
+            else
+                return git_diff_command({
+                    "git",
+                    "diff",
+                    prev_commit,
+                    commit_hash,
+                    "--",
+                    file.git_relative_path_to_relative_path(curr_name),
+                })
+            end
         end,
     })
 end
@@ -282,7 +397,7 @@ M.current_branch = function()
     return output
 end
 
-M.determine_historic_file_name = determine_historic_file_name
+M.file_name_on_commit = file_name_on_commit
 M.git_diff_command = git_diff_command
 
 return M

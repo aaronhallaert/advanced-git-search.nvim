@@ -8,6 +8,10 @@ M.relative_path = function(bufnr)
     return vim.fn.expand("#" .. bufnr .. ":~:.")
 end
 
+M.git_dir = function()
+    return M.find_first_ancestor_dir_or_file(vim.fn.getcwd(), ".git")
+end
+
 M.file_name = function(bufnr)
     return vim.fn.expand("#" .. bufnr .. ":t")
 end
@@ -45,6 +49,15 @@ M.git_relative_path = function(bufnr)
         git_dir = utils.escape_chars(vim.fn.getcwd() .. "/")
         return string.gsub(abs_filename, git_dir, "")
     end
+end
+
+M.git_relative_path_to_relative_path = function(git_relative_path)
+    local git_dir = M.find_first_ancestor_dir_or_file(vim.fn.getcwd(), ".git")
+    local project_dir = vim.fn.getcwd()
+
+    local absolute_path = git_dir .. "/" .. git_relative_path
+    project_dir = utils.escape_chars(project_dir .. "/")
+    return string.gsub(absolute_path, project_dir, "")
 end
 
 M.path = (function()

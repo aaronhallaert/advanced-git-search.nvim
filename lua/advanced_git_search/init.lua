@@ -108,7 +108,7 @@ M.diff_branch_file = function()
 
                     gu.open_diff_view(
                         branch,
-                        gu.determine_historic_file_name(branch, file_name)
+                        gu.file_name_on_commit(branch, file_name)
                     )
                 end)
 
@@ -300,8 +300,10 @@ M.diff_commit_file = function()
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
-                    local old_file_name =
-                        gu.determine_historic_file_name(commit_hash, bufnr)
+                    local old_file_name = gu.file_name_on_commit(
+                        commit_hash,
+                        file.git_relative_path(bufnr)
+                    )
 
                     gu.open_diff_view(commit_hash, old_file_name)
                 end)
