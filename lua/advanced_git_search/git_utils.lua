@@ -31,6 +31,39 @@ local split_query_from_author = function(query)
     return prompt, author
 end
 
+--- @param command table
+--- @param git_flags_ix number|nil
+--- @param git_diff_flags_ix number|nil
+--- @return table Command with configured git diff flags
+local git_diff_command = function(command, git_flags_ix, git_diff_flags_ix)
+    git_flags_ix = git_flags_ix or 2
+    git_diff_flags_ix = git_diff_flags_ix or 3
+
+    local git_diff_flags = config.git_diff_flags()
+    local git_flags = config.git_flags()
+
+    if git_flags_ix > git_diff_flags_ix then
+        vim.notify(
+            "git_flags must be inserted before git_diff_flags",
+            vim.log.levels.ERROR
+        )
+    end
+
+    if git_diff_flags ~= nil and #git_diff_flags > 0 then
+        for i, flag in ipairs(git_diff_flags) do
+            table.insert(command, git_diff_flags_ix + i - 1, flag)
+        end
+    end
+
+    if git_flags ~= nil and #git_flags > 0 then
+        for i, flag in ipairs(git_flags) do
+            table.insert(command, git_flags_ix + i - 1, flag)
+        end
+    end
+
+    return command
+end
+
 local git_log_entry_maker = function(entry)
     -- dce3b0743 2022-09-09 author _ message
     -- FIXME: will break if author contains _
@@ -183,7 +216,7 @@ M.git_diff_previewer_file = function(bufnr)
             local commit_hash = entry.opts.commit_hash
 
             local prev_commit = string.format("%s~", commit_hash)
-            return {
+            return git_diff_command({
                 "git",
                 "diff",
                 prev_commit
@@ -192,7 +225,7 @@ M.git_diff_previewer_file = function(bufnr)
                 commit_hash
                     .. ":"
                     .. determine_historic_file_name(commit_hash, bufnr),
-            }
+            })
         end,
     })
 end
@@ -250,5 +283,6 @@ M.current_branch = function()
 end
 
 M.determine_historic_file_name = determine_historic_file_name
+M.git_diff_command = git_diff_command
 
 return M

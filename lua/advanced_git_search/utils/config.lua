@@ -6,12 +6,43 @@ M.setup = function(ext_config)
     ext_config = ext_config or {}
 
     ext_config.diff_plugin = ext_config.diff_plugin or "fugitive"
+    ext_config.git_diff_flags = ext_config.git_diff_flags or {}
 
     config = ext_config
 end
 
 M.get_config = function()
     return config
+end
+
+M.git_diff_flags = function()
+    local git_diff_flags = config["git_diff_flags"] or {}
+
+    if type(git_diff_flags) ~= "table" then
+        vim.notify(
+            "git_diff_flags must be a table",
+            vim.log.levels.ERROR,
+            { title = "Advanced Git Search" }
+        )
+        return nil
+    end
+
+    return git_diff_flags
+end
+
+M.git_flags = function()
+    local git_flags = config["git_flags"] or {}
+
+    if type(git_flags) ~= "table" then
+        vim.notify(
+            "git_flags must be a table",
+            vim.log.levels.ERROR,
+            { title = "Advanced Git Search" }
+        )
+        return nil
+    end
+
+    return git_flags
 end
 
 M.diff_plugin = function()
