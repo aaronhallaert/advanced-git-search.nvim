@@ -96,6 +96,8 @@ local file_exists_on_commit = function(commit_hash, git_relative_file_path)
     return output ~= ""
 end
 
+M.file_exists_on_commit = file_exists_on_commit
+
 --- Returns the file name of a file on a specific commit
 --- @param commit_hash string
 --- @param git_relative_file_path string
@@ -163,7 +165,11 @@ local file_name_on_commit = function(commit_hash, git_relative_file_path)
     local output = command_util.execute(command)
     output = string.gsub(output, "\n", "")
 
-    return output
+    if file_exists_on_commit(commit_hash, output) then
+        return output
+    else
+        return nil
+    end
 end
 
 M.file_name_on_commit = file_name_on_commit
