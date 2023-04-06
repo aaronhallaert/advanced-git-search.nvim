@@ -74,6 +74,7 @@ M.diff_commit_line = function()
             attach_mappings = function(_, map)
                 ags_mappings.open_diff_view_current_file_selected_commit(map)
                 ags_mappings.open_selected_commit_in_browser(map)
+                ags_mappings.copy_commit_hash_to_clipboard(map)
                 return true
             end,
         })
@@ -98,6 +99,7 @@ M.search_log_content = function()
             attach_mappings = function(_, map)
                 ags_mappings.open_diff_view_current_file_selected_commit(map)
                 ags_mappings.open_selected_commit_in_browser(map)
+                ags_mappings.copy_commit_hash_to_clipboard(map)
                 return true
             end,
         })
@@ -126,6 +128,7 @@ M.search_log_content_file = function()
             attach_mappings = function(_, map)
                 ags_mappings.open_diff_view_current_file_selected_commit(map)
                 ags_mappings.open_selected_commit_in_browser(map)
+                ags_mappings.copy_commit_hash_to_clipboard(map)
 
                 return true
             end,
@@ -151,6 +154,7 @@ M.diff_commit_file = function()
                 ags_mappings.open_diff_view_current_file_selected_commit(map)
                 ags_mappings.show_entire_commit(map)
                 ags_mappings.open_selected_commit_in_browser(map)
+                ags_mappings.copy_commit_hash_to_clipboard(map)
 
                 return true
             end,

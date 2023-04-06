@@ -88,6 +88,25 @@ M.show_entire_commit = function(map)
 end
 
 -------------------------------------------------------------------------------
+local copy_commit_hash = function(_)
+    local selection = action_state.get_selected_entry()
+    local commit_hash = selection.opts.commit_hash
+    vim.notify(
+        "Copied commit hash " .. commit_hash .. " to clipboard",
+        vim.log.levels.INFO,
+        { title = "Advanced Git Search" }
+    )
+
+    vim.fn.setreg("+", commit_hash)
+    vim.fn.setreg("*", commit_hash)
+end
+
+--- copy commit hash to clipboard with <C-y>
+M.copy_commit_hash_to_clipboard = function(map)
+    omnimap(map, "<C-y>", copy_commit_hash)
+end
+
+-------------------------------------------------------------------------------
 local checkout = function(prompt_bufnr)
     actions.close(prompt_bufnr)
     local selection = action_state.get_selected_entry()
