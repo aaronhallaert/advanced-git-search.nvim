@@ -356,14 +356,14 @@ M.open_diff_view = function(
     if file_name ~= nil and file_name ~= "" then
         if diff_plugin == "diffview" then
             vim.api.nvim_command(
-                ":DiffviewOpen " .. commit .. " -- " .. file_name
+                ":DiffviewOpen -uno " .. commit .. " -- " .. file_name
             )
         elseif diff_plugin == "fugitive" then
             vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
         end
     else
         if diff_plugin == "diffview" then
-            vim.api.nvim_command(":DiffviewOpen " .. commit)
+            vim.api.nvim_command(":DiffviewOpen -uno " .. commit)
         elseif diff_plugin == "fugitive" then
             vim.api.nvim_command(":Gvdiffsplit " .. commit)
         end
