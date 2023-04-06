@@ -1,7 +1,6 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local git_utils = require("advanced_git_search.utils.git")
-local file = require("advanced_git_search.utils.file")
 
 local pickers = require("telescope.pickers")
 local sorters = require("telescope.sorters")
@@ -25,7 +24,7 @@ M.changed_on_branch = function()
                 .. git_utils.current_branch(),
             sorter = sorters.get_fuzzy_file(),
             finder = ags_finders.changed_files_on_current_branch_finder(),
-            previewer = ags_previewers.changed_files_on_current_branch_finder(),
+            previewer = ags_previewers.changed_files_on_current_branch_previewer(),
         })
         :find()
 end
@@ -36,7 +35,7 @@ end
 M.diff_branch_file = function()
     -- local previewers = require('telescope.previewers')
     local current_branch = git_utils.current_branch()
-    local filename = file.git_relative_path(vim.fn.bufnr())
+    local bufnr = vim.fn.bufnr()
 
     pickers
         .new({
@@ -44,7 +43,7 @@ M.diff_branch_file = function()
             prompt_title = "Branch name",
             finder = ags_finders.git_branches_finder(),
             sorter = sorters.get_fuzzy_file(),
-            previewer = ags_previewers.git_diff_branch_file_previewer(filename),
+            previewer = ags_previewers.git_diff_branch_file_previewer(bufnr),
             attach_mappings = function(_, map)
                 ags_mappings.open_diff_view_current_file_selected_branch(map)
                 return true

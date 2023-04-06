@@ -6,10 +6,10 @@ local M = {}
 
 --- Shows a diff of the commit in the finder entry, filtered on the file of the current buffer
 M.git_diff_commit_file_previewer = function(bufnr)
+    local filename_on_head = file.git_relative_path(bufnr)
     return previewers.new_termopen_previewer({
+        title = "Changes on selected commit for: " .. file.file_name(bufnr),
         get_command = function(entry)
-            local filename_on_head = file.git_relative_path(bufnr)
-
             local commit_hash = entry.opts.commit_hash
 
             local prev_commit = git_utils.previous_commit_hash(commit_hash)
@@ -43,6 +43,7 @@ end
 --- Shows a diff of the commit in the finder entry, filtered on the prompt string for the commit content
 M.git_diff_content_previewer = function()
     return previewers.new_termopen_previewer({
+        title = "Changes including prompt string",
         get_command = function(entry)
             local commit_hash = entry.opts.commit_hash
             local prompt = entry.opts.prompt
@@ -64,8 +65,9 @@ M.git_diff_content_previewer = function()
 end
 
 --- Shows a diff of the file in the finder entry and the fork point of the current branch
-M.changed_files_on_current_branch_finder = function()
+M.changed_files_on_current_branch_previewer = function()
     return previewers.new_termopen_previewer({
+        title = "Diff of selected file and fork point",
         get_command = function(entry)
             return git_utils.git_diff_command({
                 "git",
@@ -82,18 +84,36 @@ M.changed_files_on_current_branch_finder = function()
 end
 
 --- Shows a diff of the branch in the finder entry relative to the passed filename
-M.git_diff_branch_file_previewer = function(filename)
+M.git_diff_branch_file_previewer = function(bufnr)
+    local filename = file.file_name(bufnr)
     return previewers.new_termopen_previewer({
+        title = "Diff of current buffer and selected branch for: " .. filename,
         get_command = function(entry)
             local branch = entry.value
+            local current_hash = git_utils.branch_hash("HEAD")
 
-            return git_utils.git_diff_command({
-                "git",
-                "diff",
-                branch,
-                "--",
-                filename,
-            })
+            local branch_filename = git_utils.file_name_on_commit(
+                git_utils.branch_hash(branch),
+                file.git_relative_path(bufnr)
+            )
+
+            if branch_filename ~= nil then
+                return git_utils.git_diff_command({
+                    "git",
+                    "diff",
+                    branch .. ":" .. branch_filename,
+                    current_hash .. ":" .. file.git_relative_path(bufnr),
+                })
+            else
+                return git_utils.git_diff_command({
+                    "git",
+                    "diff",
+                    branch,
+                    current_hash,
+                    "--",
+                    file.relative_path(bufnr),
+                })
+            end
         end,
     })
 end

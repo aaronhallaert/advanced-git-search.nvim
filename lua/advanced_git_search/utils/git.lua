@@ -64,6 +64,13 @@ M.previous_commit_hash = function(commit_hash)
     return string.gsub(output, "\n", "")
 end
 
+M.branch_hash = function(branch)
+    local command = "git rev-parse " .. branch
+
+    local output = command_util.execute(command)
+    return string.gsub(output, "\n", "")
+end
+
 -- local is_file_renamed = function(git_relative_file_path)
 --     local command = "cd "
 --         .. file.git_dir()
@@ -154,8 +161,9 @@ local file_name_on_commit = function(commit_hash, git_relative_file_path)
         .. " | tail -1"
 
     local output = command_util.execute(command)
+    output = string.gsub(output, "\n", "")
 
-    return string.gsub(output, "\n", "")
+    return output
 end
 
 M.file_name_on_commit = file_name_on_commit
