@@ -17,8 +17,7 @@ M.omnimap = omnimap
 
 -- create a local function and assign it to a map to get which_key description
 -------------------------------------------------------------------------------
-local open_commit_in_browser = function(prompt_bufnr)
-    actions.close(prompt_bufnr)
+local open_commit_in_browser = function(_)
     local selection = action_state.get_selected_entry()
 
     vim.api.nvim_command(":GBrowse " .. selection.opts.commit_hash)
