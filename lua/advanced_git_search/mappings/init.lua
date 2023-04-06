@@ -3,6 +3,7 @@ local ags_actions = require("advanced_git_search.actions")
 local action_state = require("telescope.actions.state")
 local file = require("advanced_git_search.utils.file")
 local git_utils = require("advanced_git_search.utils.git")
+local config = require("advanced_git_search.utils.config")
 
 -- Map a key to both insert and normal modes
 local function omnimap(map_func, key, handler)
@@ -66,20 +67,14 @@ local open_entire_commit = function(prompt_bufnr)
     local selection = action_state.get_selected_entry()
     local commit_hash = selection.opts.commit_hash
 
-    local command = {
-        "git",
-        "diff",
-        string.format("%s~", commit_hash),
-        commit_hash,
-        "\n",
-    }
-
-    vim.api.nvim_command("split new") -- split a new window
-    vim.api.nvim_win_set_height(0, 30) -- set the window height
-    local buf_handle = vim.api.nvim_win_get_buf(0) -- get the buffer handler
-    local jobID = vim.api.nvim_call_function("termopen", { "$SHELL" })
-    vim.api.nvim_buf_set_option(buf_handle, "modifiable", true)
-    vim.api.nvim_chan_send(jobID, table.concat(command, " "))
+    local diff_plugin = config.diff_plugin()
+    if diff_plugin == "diffview" then
+        vim.api.nvim_command(
+            ":DiffviewOpen -uno " .. commit_hash .. "~.." .. commit_hash
+        )
+    elseif diff_plugin == "fugitive" then
+        vim.api.nvim_command(":Gedit " .. commit_hash)
+    end
 end
 
 --- open entire commit diff with <C-e>

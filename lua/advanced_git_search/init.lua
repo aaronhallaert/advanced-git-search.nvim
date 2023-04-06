@@ -13,8 +13,6 @@ local M = {}
 
 --- Opens a Telescope window with all files changed on the current branch
 --- Only committed changes will be displayed
----
---- <CR> to open the file
 M.changed_on_branch = function()
     pickers
         .new({
@@ -30,8 +28,6 @@ M.changed_on_branch = function()
 end
 
 --- Opens a Telescope window with a list of local branches
----
---- <CR> opens a diff for the current file with the selected branch
 M.diff_branch_file = function()
     -- local previewers = require('telescope.previewers')
     local current_branch = git_utils.current_branch()
@@ -54,9 +50,6 @@ end
 
 --- Opens a Telescope window with a list of previous commit logs
 --- with respect to selected lines
----
---- <CR> opens a diff for the current file with the selected commit
---- <C-o> opens a the selected commit in the browser
 M.diff_commit_line = function()
     local bufnr = vim.fn.bufnr()
     local s_start = vim.fn.getpos("'<")[2]
@@ -75,6 +68,7 @@ M.diff_commit_line = function()
                 ags_mappings.open_diff_view_current_file_selected_commit(map)
                 ags_mappings.open_selected_commit_in_browser(map)
                 ags_mappings.copy_commit_hash_to_clipboard(map)
+                ags_mappings.show_entire_commit(map)
                 return true
             end,
         })
@@ -84,9 +78,6 @@ end
 --- Opens a Telescope window with a list of previous commits.
 --- Query is used to filter the results based on the
 --- content of the commit (added or removed text).
----
---- <CR> opens a diff for the current file with the selected commit
---- <C-o> opens a the selected commit in the browser
 M.search_log_content = function()
     -- git log -L741,751:'app/models/patients/patient.rb' \
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
@@ -100,6 +91,7 @@ M.search_log_content = function()
                 ags_mappings.open_diff_view_current_file_selected_commit(map)
                 ags_mappings.open_selected_commit_in_browser(map)
                 ags_mappings.copy_commit_hash_to_clipboard(map)
+                ags_mappings.show_entire_commit(map)
                 return true
             end,
         })
@@ -107,9 +99,6 @@ M.search_log_content = function()
 end
 
 --- Same as `search_log_content` but with respect to the current file
----
---- <CR> opens a diff for the current file with the selected commit
---- <C-o> opens a the selected commit in the browser
 M.search_log_content_file = function()
     -- local file_name = vim.fn.expand("%")
     -- local relative_file_name = vim.fn.expand("%:~:.")
@@ -129,6 +118,7 @@ M.search_log_content_file = function()
                 ags_mappings.open_diff_view_current_file_selected_commit(map)
                 ags_mappings.open_selected_commit_in_browser(map)
                 ags_mappings.copy_commit_hash_to_clipboard(map)
+                ags_mappings.show_entire_commit(map)
 
                 return true
             end,
@@ -137,10 +127,6 @@ M.search_log_content_file = function()
 end
 
 -- Opens a Telescope window with a list of git commits which changed the current file (renames included)
---
--- <CR> Opens a diff of the current file with the selected commit
--- <C-e> Opens an entire git diff of the selected commit
--- <C-o> Open the selected commit in the browser
 M.diff_commit_file = function()
     local bufnr = vim.fn.bufnr()
     pickers
@@ -163,8 +149,6 @@ M.diff_commit_file = function()
 end
 
 --- Opens a Telescope window with all reflog entries
----
---- <CR> checkout on the reflog entry
 M.checkout_reflog = function()
     pickers
         .new({
