@@ -1,12 +1,14 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
-local gu = require("advanced_git_search.git_utils")
+local git_utils = require("advanced_git_search.utils.git")
 local file = require("advanced_git_search.utils.file")
 
-local previewers = require("telescope.previewers")
 local pickers = require("telescope.pickers")
 local sorters = require("telescope.sorters")
 local finders = require("telescope.finders")
+local ags_finders = require("advanced_git_search.finders")
+local ags_previewers = require("advanced_git_search.previewers")
+local ags_actions = require("advanced_git_search.actions")
 
 local M = {}
 
@@ -25,42 +27,19 @@ M.changed_on_branch = function()
     pickers
         .new({
             results_title = "Modified "
-                .. gu.base_branch()
+                .. git_utils.base_branch()
                 .. " -> "
-                .. gu.current_branch(),
-            finder = finders.new_oneshot_job(vim.tbl_flatten({
-                "git",
-                "--no-pager",
-                "diff",
-                "--name-only",
-                "--cached",
-                "--diff-filter=ACMR",
-                "--merge-base",
-                gu.base_branch(),
-                "--relative",
-            })),
+                .. git_utils.current_branch(),
             sorter = sorters.get_fuzzy_file(),
-            previewer = previewers.new_termopen_previewer({
-                get_command = function(entry)
-                    return gu.git_diff_command({
-                        "git",
-                        "diff",
-                        "--diff-filter=ACMR",
-                        "--cached",
-                        "--merge-base",
-                        gu.base_branch(),
-                        "--",
-                        entry.value,
-                    })
-                end,
-            }),
+            finder = ags_finders.changed_files_on_current_branch_finder(),
+            previewer = ags_previewers.changed_files_on_current_branch_finder(),
             attach_mappings = function(_, map)
                 omnimap(map, "<C-e>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local file_name = selection.value
                     vim.cmd(":edit " .. file_name)
-                    gu.open_diff_view(gu.base_branch())
+                    ags_actions.open_diff_view(git_utils.base_branch())
                 end)
 
                 return true
@@ -74,41 +53,25 @@ end
 --- <CR> opens a diff for the current file with the selected branch
 M.diff_branch_file = function()
     -- local previewers = require('telescope.previewers')
-    local current_branch = vim.fn.system("git branch --show-current")
-    current_branch = string.gsub(current_branch, "\n", "")
-    local file_name = file.git_relative_path(vim.fn.bufnr())
+    local current_branch = git_utils.current_branch()
+    local filename = file.git_relative_path(vim.fn.bufnr())
+
     pickers
         .new({
             results_title = "Local branches :: *" .. current_branch,
             prompt_title = "Branch name",
-            finder = finders.new_oneshot_job({
-                "git",
-                "branch",
-                "--format=%(refname:short)",
-            }),
+            finder = ags_finders.git_branches_finder(),
             sorter = sorters.get_fuzzy_file(),
-            previewer = previewers.new_termopen_previewer({
-                get_command = function(entry)
-                    local branch = entry.value
-
-                    return gu.git_diff_command({
-                        "git",
-                        "diff",
-                        branch,
-                        "--",
-                        file_name,
-                    })
-                end,
-            }),
+            previewer = ags_previewers.git_diff_branch_file_previewer(filename),
             attach_mappings = function(_, map)
                 omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local branch = selection.value
 
-                    gu.open_diff_view(
+                    ags_actions.open_diff_view(
                         branch,
-                        gu.file_name_on_commit(branch, file_name)
+                        git_utils.file_name_on_commit(branch, filename)
                     )
                 end)
 
@@ -134,9 +97,8 @@ M.diff_commit_line = function()
         .new({
             results_title = "Commits that affected the selected lines",
             prompt_title = "Commit message",
-            finder = gu.git_log_grepper_on_location(bufnr, s_start, s_end),
-            -- finder = finders.new_oneshot_job({'git', 'log', location}),
-            previewer = gu.git_diff_previewer_file(bufnr),
+            finder = ags_finders.git_log_location_finder(bufnr, s_start, s_end),
+            previewer = ags_previewers.git_diff_commit_file_previewer(bufnr),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 omnimap(map, "<CR>", function(prompt_bufnr)
@@ -144,7 +106,7 @@ M.diff_commit_line = function()
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
 
-                    gu.open_diff_view(commit_hash)
+                    ags_actions.open_diff_view(commit_hash)
                 end)
                 omnimap(map, "<C-o>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
@@ -177,35 +139,15 @@ M.search_log_content = function()
         .new({
             results_title = "Commits",
             prompt_title = "Git log content (added, removed or updated text)",
-            finder = gu.git_log_grepper_on_content({}),
-            -- finder = finders.new_oneshot_job({'git', 'log', location}),
-            previewer = previewers.new_termopen_previewer({
-                get_command = function(entry)
-                    local commit_hash = entry.opts.commit_hash
-                    local prompt = entry.opts.prompt
-                    local command = gu.git_diff_command({
-                        "git",
-                        "diff",
-                        string.format("%s~", commit_hash),
-                        commit_hash,
-                    })
-
-                    if prompt and prompt ~= "" then
-                        table.insert(command, "-G")
-                        table.insert(command, prompt)
-                    end
-
-                    return command
-                end,
-            }),
-            -- sorter = sorters.highlighter_only(),
+            finder = ags_finders.git_log_content_finder({}),
+            previewer = ags_previewers.git_diff_content_previewer(),
             attach_mappings = function(_, map)
                 omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
 
-                    gu.open_diff_view(commit_hash)
+                    ags_actions.open_diff_view(commit_hash)
                 end)
                 omnimap(map, "<C-o>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
@@ -236,27 +178,10 @@ M.search_log_content_file = function()
         .new({
             results_title = "Commits",
             prompt_title = "Git log content (added, removed or updated text in this file)",
-            finder = gu.git_log_grepper_on_content({ bufnr = vim.fn.bufnr() }),
-            -- finder = finders.new_oneshot_job({'git', 'log', location}),
-            previewer = previewers.new_termopen_previewer({
-                get_command = function(entry)
-                    local commit_hash = entry.opts.commit_hash
-                    local prompt = entry.opts.prompt
-                    local command = gu.git_diff_command({
-                        "git",
-                        "diff",
-                        string.format("%s~", commit_hash),
-                        commit_hash,
-                    })
-
-                    if prompt and prompt ~= "" then
-                        table.insert(command, "-G")
-                        table.insert(command, prompt)
-                    end
-
-                    return command
-                end,
+            finder = ags_finders.git_log_content_finder({
+                bufnr = vim.fn.bufnr(),
             }),
+            previewer = ags_previewers.git_diff_content_previewer(),
             -- sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 omnimap(map, "<CR>", function(prompt_bufnr)
@@ -264,7 +189,7 @@ M.search_log_content_file = function()
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
 
-                    gu.open_diff_view(commit_hash)
+                    ags_actions.open_diff_view(commit_hash)
                 end)
                 omnimap(map, "<C-o>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
@@ -292,20 +217,20 @@ M.diff_commit_file = function()
         .new({
             results_title = "Commits that affected this file (renamed files included)",
             prompt_title = "Commit message",
-            finder = gu.git_log_grepper_on_file(bufnr),
-            previewer = gu.git_diff_previewer_file(bufnr),
+            finder = ags_finders.git_log_file_finder(bufnr),
+            previewer = ags_previewers.git_diff_commit_file_previewer(bufnr),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 omnimap(map, "<CR>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
-                    local old_file_name = gu.file_name_on_commit(
+                    local old_file_name = git_utils.file_name_on_commit(
                         commit_hash,
                         file.git_relative_path(bufnr)
                     )
 
-                    gu.open_diff_view(commit_hash, old_file_name)
+                    ags_actions.open_diff_view(commit_hash, old_file_name)
                 end)
                 omnimap(map, "<C-e>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)
