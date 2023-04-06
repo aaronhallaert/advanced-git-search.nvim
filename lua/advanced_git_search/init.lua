@@ -2,6 +2,7 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local gu = require("advanced_git_search.git_utils")
 local file = require("advanced_git_search.utils.file")
+local config = require("advanced_git_search.utils.config")
 
 local previewers = require("telescope.previewers")
 local pickers = require("telescope.pickers")
@@ -154,6 +155,13 @@ M.diff_commit_line = function()
                         ":GBrowse " .. selection.opts.commit_hash
                     )
                 end)
+                omnimap(map, "<C-e>", function(prompt_bufnr)
+                    actions.close(prompt_bufnr)
+                    local selection = action_state.get_selected_entry()
+                    local commit_hash = selection.opts.commit_hash
+
+                    gu.open_entire_commit(commit_hash)
+                end)
 
                 return true
             end,
@@ -215,6 +223,13 @@ M.search_log_content = function()
                         ":GBrowse " .. selection.opts.commit_hash
                     )
                 end)
+                omnimap(map, "<C-e>", function(prompt_bufnr)
+                    actions.close(prompt_bufnr)
+                    local selection = action_state.get_selected_entry()
+                    local commit_hash = selection.opts.commit_hash
+
+                    gu.open_entire_commit(commit_hash)
+                end)
 
                 return true
             end,
@@ -274,6 +289,13 @@ M.search_log_content_file = function()
                         ":GBrowse " .. selection.opts.commit_hash
                     )
                 end)
+                omnimap(map, "<C-e>", function(prompt_bufnr)
+                    actions.close(prompt_bufnr)
+                    local selection = action_state.get_selected_entry()
+                    local commit_hash = selection.opts.commit_hash
+
+                    gu.open_entire_commit(commit_hash)
+                end)
 
                 return true
             end,
@@ -312,21 +334,7 @@ M.diff_commit_file = function()
                     local selection = action_state.get_selected_entry()
                     local commit_hash = selection.opts.commit_hash
 
-                    local command = {
-                        "git",
-                        "diff",
-                        string.format("%s~", commit_hash),
-                        commit_hash,
-                        "\n",
-                    }
-
-                    vim.api.nvim_command("split new") -- split a new window
-                    vim.api.nvim_win_set_height(0, 30) -- set the window height
-                    local buf_handle = vim.api.nvim_win_get_buf(0) -- get the buffer handler
-                    local jobID =
-                        vim.api.nvim_call_function("termopen", { "$SHELL" })
-                    vim.api.nvim_buf_set_option(buf_handle, "modifiable", true)
-                    vim.api.nvim_chan_send(jobID, table.concat(command, " "))
+                    gu.open_entire_commit(commit_hash)
                 end)
                 omnimap(map, "<C-o>", function(prompt_bufnr)
                     actions.close(prompt_bufnr)

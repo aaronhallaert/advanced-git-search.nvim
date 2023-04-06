@@ -397,6 +397,17 @@ M.current_branch = function()
     return output
 end
 
+M.open_entire_commit = function(commit_hash)
+    local diff_plugin = config.diff_plugin()
+    if diff_plugin == "diffview" then
+        vim.api.nvim_command(
+            ":DiffviewOpen -uno " .. commit_hash .. "~.." .. commit_hash
+        )
+    elseif diff_plugin == "fugitive" then
+        vim.api.nvim_command(":Gedit " .. commit_hash)
+    end
+end
+
 M.file_name_on_commit = file_name_on_commit
 M.git_diff_command = git_diff_command
 
