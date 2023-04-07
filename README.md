@@ -65,8 +65,10 @@ vim.api.nvim_set_keymap(
 
 #### _Keymaps_
 
-- `<CR>` opens a diff for the current file with the selected commit
+- `<CR>` opens a diff for the current file with the corresponding file on the selected commit
+- `<C-e>` show the entire commit for all files in neovim with diff plugin
 - `<C-o>` opens a the selected commit in the browser
+- `<C-y>` copy the commit hash to clipboard
 
 ### 3. diff_commit_file
 
@@ -78,8 +80,9 @@ _Grep behaviour_: filter on commit message.
 #### _Keymaps_
 
 - `<CR>` Opens a diff of the current file with the selected commit
-- `<C-e>` Opens an entire git diff of the selected commit
+- `<C-e>` show the entire commit for all files in neovim with diff plugin
 - `<C-o>` Open the selected commit in the browser
+- `<C-y>` copy the commit hash to clipboard
 
 ### 4. search_log_content
 
@@ -89,8 +92,10 @@ _Grep behaviour_: filter on added, updated or removed code (log content: `-G` op
 
 #### _Keymaps_
 
-- `<CR>` opens a diff for the current file with the selected commit
-- `<C-o>` opens the selected commit in the browser
+- `<CR>` Opens a diff of the current file with the selected commit
+- `<C-e>` show the entire commit for all files in neovim with diff plugin
+- `<C-o>` Open the selected commit in the browser
+- `<C-y>` copy the commit hash to clipboard
 
 ### 5. search_log_content_file
 
@@ -101,8 +106,10 @@ _Grep behaviour_: filter on added, updated or removed code (log content: `-G` op
 
 #### _Keymaps_
 
-- `<CR>` opens a diff for the current file with the selected commit
-- `<C-o>` opens the selected commit in the browser
+- `<CR>` Opens a diff of the current file with the selected commit
+- `<C-e>` show the entire commit for all files in neovim with diff plugin
+- `<C-o>` Open the selected commit in the browser
+- `<C-y>` copy the commit hash to clipboard
 
 ### 6. changed_on_branch
 
@@ -125,7 +132,6 @@ _Grep behaviour_: filter on filename.
 #### _Keymaps_
 
 - `<CR>` opens the selected file.
-- `<C-e>` opens diff of the selected file with base branch.
 
 ### 7. checkout_reflog
 
