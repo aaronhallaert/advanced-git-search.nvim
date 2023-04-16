@@ -1,6 +1,7 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local git_utils = require("advanced_git_search.utils.git")
+local config = require("advanced_git_search.utils.config")
 
 local pickers = require("telescope.pickers")
 local sorters = require("telescope.sorters")
@@ -163,17 +164,54 @@ M.checkout_reflog = function()
         :find()
 end
 
-local git_functions = {
-    { value = "Changed on current branch", func = M.changed_on_branch },
-    { value = "Find in repo log content", func = M.search_log_content },
-    { value = "Find in file log content", func = M.search_log_content_file },
-    { value = "Diff file with branch", func = M.diff_branch_file },
-    { value = "Diff file with previous commit", func = M.diff_commit_file },
+local custom_git_functions = {
     {
-        value = "Diff file with selected line history",
+        value = "Search in repo log content",
+        func = M.search_log_content,
+    },
+    {
+        value = "Search in file log content",
+        func = M.search_log_content_file,
+    },
+    {
+        value = "Diff current file with commit",
+        func = M.diff_commit_file,
+    },
+    {
+        value = "Diff current file with selected line history",
         func = M.diff_commit_line,
     },
-    { value = "Checkout from reflog", func = M.checkout_reflog },
+    {
+        value = "Diff file with branch",
+        func = M.diff_branch_file,
+    },
+    {
+        value = "Changed on current branch (experimental)",
+        func = M.changed_on_branch,
+    },
+    {
+        value = "Checkout from reflog",
+        func = M.checkout_reflog,
+    },
+}
+
+local builtin_git_functions = {
+    {
+        value = "Git commits [telescope.builtin]",
+        func = require("telescope.builtin").git_commits,
+    },
+    {
+        value = "Git branches [telescope.builtin]",
+        func = require("telescope.builtin").git_branches,
+    },
+    {
+        value = "Git status [telescope.builtin]",
+        func = require("telescope.builtin").git_status,
+    },
+    {
+        value = "Git stash [telescope.builtin]",
+        func = require("telescope.builtin").git_stash,
+    },
 }
 
 local function map_item(git_functions_table, f)
@@ -184,8 +222,23 @@ local function map_item(git_functions_table, f)
     return t
 end
 
+local git_functions_table = function()
+    local t = {}
+    for _, v in pairs(custom_git_functions) do
+        t[#t + 1] = v
+    end
+
+    if config.show_builtin_git_pickers() then
+        for _, v in pairs(builtin_git_functions) do
+            t[#t + 1] = v
+        end
+    end
+
+    return t
+end
+
 local function execute_git_function(value)
-    for _, v in pairs(git_functions) do
+    for _, v in pairs(git_functions_table()) do
         if v["value"] == value then
             v["func"]()
             return
@@ -195,12 +248,14 @@ end
 
 --- Opens all a selector for all advanced git search functions
 M.show_custom_functions = function()
+    local keys = map_item(git_functions_table(), function(item)
+        return item["value"]
+    end)
+
     pickers
         .new({
-            results_title = "Git action",
-            finder = finders.new_table(map_item(git_functions, function(item)
-                return item["value"]
-            end)),
+            prompt_title = "Git actions",
+            finder = finders.new_table(keys),
             sorter = sorters.get_fuzzy_file(),
             attach_mappings = function(_, map)
                 ags_mappings.omnimap(map, "<CR>", function(prompt_bufnr)
@@ -214,5 +269,11 @@ M.show_custom_functions = function()
         })
         :find()
 end
+
+vim.api.nvim_create_user_command(
+    "AdvancedGitSearch",
+    "lua require('telescope').extensions.advanced_git_search.show_custom_functions()",
+    { range = true }
+)
 
 return M

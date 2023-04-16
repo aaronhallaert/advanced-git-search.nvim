@@ -7,6 +7,8 @@ M.setup = function(ext_config)
 
     ext_config.diff_plugin = ext_config.diff_plugin or "fugitive"
     ext_config.git_diff_flags = ext_config.git_diff_flags or {}
+    ext_config.show_builtin_git_pickers = ext_config.show_builtin_git_pickers
+        or false
 
     config = ext_config
 end
@@ -74,6 +76,10 @@ M.diff_plugin = function()
     end
 
     return diff_plugin
+end
+
+M.show_builtin_git_pickers = function()
+    return config["show_builtin_git_pickers"]
 end
 
 return M
