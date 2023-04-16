@@ -79,9 +79,18 @@ selected lines
 
 _Grep behaviour_: filter on commit message.
 
-Note: First you have to select the lines in visual mode, then go back to normal
+#### How to use
+
+_The following only applies when you use one of the commands below._
+
+```vim
+:Telescope advanced_git_search diff_commit_line
+:lua require('telescope').extensions.advanced_git_search.diff_commit_line()
+```
+
+First you have to select the lines in visual mode, then go back to normal
 mode and execute this command.
-To make this a bit easier, you can wrap it in a user command and define a keybind:
+To make a bit easier, you can wrap it in a user command and define a keybind:
 
 ```lua
 vim.api.nvim_create_user_command(
@@ -97,6 +106,8 @@ vim.api.nvim_set_keymap(
     { noremap = true }
 )
 ```
+
+No extra setup is needed when you use `:AdvancedGitSearch`.
 
 #### _Keymaps_
 
