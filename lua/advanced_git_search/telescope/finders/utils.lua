@@ -3,37 +3,14 @@ local utils = require("advanced_git_search.utils")
 local M = {}
 local last_prompt = nil
 
-M.split_query_from_author = function(query)
-    local author = nil
-    local prompt = nil
-    if query ~= nil and query ~= "" then
-        -- starts with @
-        if query:sub(1, 1) == "@" then
-            author = query:sub(2)
-            return prompt, author
-        end
-
-        local split = utils.split_string(query, "@")
-        prompt = split[1]
-
-        -- remove last space from prompt
-        if prompt:sub(-1) == " " then
-            prompt = prompt:sub(1, -2)
-        end
-
-        author = split[2]
-    end
-
-    return prompt, author
-end
-
 --- Parse "--format=%C(auto)%h %as %C(green)%an _ %Creset %s" to table
 --- with opts: commit_hash, date, author, message, prompt
 --- @param entry string
 M.git_log_entry_maker = function(entry)
     -- dce3b0743 2022-09-09 author _ message
     -- FIXME: will break if author contains _
-    local split = utils.split_string(entry, "_")
+    local cleaned = string.gsub(entry, "'", "")
+    local split = utils.split_string(cleaned, "_")
     local attrs = utils.split_string(split[1])
     local hash = attrs[1]
     local date = attrs[2]

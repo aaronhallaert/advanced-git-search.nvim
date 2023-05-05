@@ -22,41 +22,6 @@ local all_commit_hashes_touching_file = function(git_relative_file_path)
     return utils.split_string(output, "\n")
 end
 
---- @param command table
---- @param git_flags_ix number|nil
---- @param git_diff_flags_ix number|nil
---- @return table Command with configured git diff flags
-local git_diff_command = function(command, git_flags_ix, git_diff_flags_ix)
-    git_flags_ix = git_flags_ix or 2
-    git_diff_flags_ix = git_diff_flags_ix or 3
-
-    local git_diff_flags = config.git_diff_flags()
-    local git_flags = config.git_flags()
-
-    if git_flags_ix > git_diff_flags_ix then
-        vim.notify(
-            "git_flags must be inserted before git_diff_flags",
-            vim.log.levels.ERROR
-        )
-    end
-
-    if git_diff_flags ~= nil and #git_diff_flags > 0 then
-        for i, flag in ipairs(git_diff_flags) do
-            table.insert(command, git_diff_flags_ix + i - 1, flag)
-        end
-    end
-
-    if git_flags ~= nil and #git_flags > 0 then
-        for i, flag in ipairs(git_flags) do
-            table.insert(command, git_flags_ix + i - 1, flag)
-        end
-    end
-
-    return command
-end
-
-M.git_diff_command = git_diff_command
-
 M.previous_commit_hash = function(commit_hash)
     local command = "git rev-parse " .. commit_hash .. "~"
 

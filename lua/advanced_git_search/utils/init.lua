@@ -44,4 +44,21 @@ M.escape_chars = function(x)
     )
 end
 
+M.escape_term = function(x)
+    return (
+        x:gsub("%%", "\\%%")
+            :gsub("^%^", "\\%^")
+            :gsub("%$$", "\\%$")
+            :gsub("%(", "\\%(")
+            :gsub("%)", "\\%)")
+            :gsub("%.", "\\%.")
+            :gsub("%[", "\\%[")
+            :gsub("%]", "\\%]")
+            :gsub("%*", "\\%*")
+            :gsub("%+", "\\%+")
+            :gsub("%-", "\\%-")
+            :gsub("%?", "\\%?")
+    )
+end
+
 return M
