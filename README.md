@@ -1,28 +1,44 @@
-# Telescope Advanced Git Search
+# Advanced Git Search
+
+An advanced git search extension for `Telescope` and `fzf-lua`.
+
+Search your git history by commit message, content and author in Neovim
 
 ## 🖥️ Usage
 
-[![Demo](https://img.youtube.com/vi/bO0uYLlHtYo/0.jpg)](https://www.youtube.com/watch?v=bO0uYLlHtYo)
+- [Demo](https://www.youtube.com/watch?v=bO0uYLlHtYo)
 
 ### 📖 Open a picker
+
+#### 🔭 Telescope
 
 ```vim
 :Telescope advanced_git_search {function_name}
 ```
 
-#### or in lua
+> or in lua
 
 ```lua
 require('telescope').extensions.advanced_git_search.{function_name}()
 ```
 
-#### or through another Telescope picker
+> or through another Telescope picker
+
+execute `:AdvancedGitSearch`, choose your picker and press `<CR>`
+
+#### 🧎 fzf-lua
+
+```lua
+require('advanced-git-search.fzf').{function_name}()
+```
+
+> or through another picker
 
 execute `:AdvancedGitSearch`, choose your picker and press `<CR>`
 
 ### 🔎 Enter a query
 
-Your usual telescope experience. See the individual commands for the grep behaviour.
+Your usual search experience. See the individual commands for the grep behaviour.
 
 ### ✏️ Further search on commit author with `@`
 
@@ -33,7 +49,7 @@ the author name.
 
 ### 1. search_log_content -- Search in repo log content
 
-Opens a Telescope window with a list of all previous commit.
+Opens a window with a list of all previous commit.
 
 _Grep behaviour_: filter on added, updated or removed code (log content: `-G` option in git).
 
@@ -46,7 +62,7 @@ _Grep behaviour_: filter on added, updated or removed code (log content: `-G` op
 
 ### 2. search_log_content_file -- Search in file log content
 
-Opens a Telescope window with a list of git commits that changed the
+Opens a window with a list of git commits that changed the
 current file (renames included).
 
 _Grep behaviour_: filter on added, updated or removed code (log content: `-G` option in git).
@@ -60,7 +76,7 @@ _Grep behaviour_: filter on added, updated or removed code (log content: `-G` op
 
 ### 3. diff_commit_file -- Diff current file with commit
 
-Opens a Telescope window with a list of git commits that changed the
+Opens a window with a list of git commits that changed the
 current file (renames included).
 
 _Grep behaviour_: filter on commit message.
@@ -74,19 +90,18 @@ _Grep behaviour_: filter on commit message.
 
 ### 4. diff_commit_line -- Diff current file with selected line history
 
-Opens a Telescope window with a list of previous commit logs with respect to
+Opens a window with a list of previous commit logs with respect to
 selected lines
 
 _Grep behaviour_: filter on commit message.
 
 #### How to use
 
-_The following only applies when you use one of the commands below._
-
-```vim
-:Telescope advanced_git_search diff_commit_line
-:lua require('telescope').extensions.advanced_git_search.diff_commit_line()
-```
+> _This workaround only applies when you use the following command. (Telescope)_
+>
+> ```vim
+> :Telescope advanced_git_search diff_commit_line
+> ```
 
 First you have to select the lines in visual mode, then go back to normal
 mode and execute this command.
@@ -107,7 +122,7 @@ vim.api.nvim_set_keymap(
 )
 ```
 
-No extra setup is needed when you use `:AdvancedGitSearch`.
+> No extra setup is needed when you use `:AdvancedGitSearch`.
 
 #### _Keymaps_
 
@@ -118,7 +133,7 @@ No extra setup is needed when you use `:AdvancedGitSearch`.
 
 ### 5. diff_branch_file -- Diff file with branch
 
-Opens a Telescope window with a list of local branches
+Opens a window with a list of local branches
 
 _Grep behaviour_: filter on branch name.
 
@@ -128,7 +143,7 @@ _Grep behaviour_: filter on branch name.
 
 ### 6. changed_on_branch -- Changed on current branch (experimental)
 
-Opens a Telescope window with a list of changed files on the current branch (including staged files).
+Opens a window with a list of changed files on the current branch (including staged files).
 The fork point of the current branch is determined with the following command:
 
 ```sh
@@ -150,7 +165,7 @@ _Grep behaviour_: filter on filename.
 
 ### 7. checkout_reflog -- Checkout from reflog
 
-Opens a Telescope window with all reflog entries
+Opens a window with all reflog entries
 
 #### _Keymaps_
 
@@ -159,9 +174,11 @@ Opens a Telescope window with all reflog entries
 ### 8. show_custom_functions
 
 A telescope picker for all functions above.
-Enable `show_builtin_git_pickers` to additionally show Telescopes builtin git pickers.
+Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
 
 ## ⚙️ Installation
+
+### Telescope
 
 With Lazy
 
@@ -232,6 +249,75 @@ With Packer
         end,
         requires = {
             "nvim-telescope/telescope.nvim",
+            -- to show diff splits and open commits in browser
+            "tpope/vim-fugitive",
+            -- to open commits in browser with fugitive
+            "tpope/vim-rhubarb",
+            -- optional: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
+        },
+    })
+```
+
+### Fzf-lua
+
+With Lazy
+
+```lua
+    {
+        "aaronhallaert/advanced-git-search.nvim",
+        config = function()
+            -- optional: setup telescope before loading the extension
+            require("advanced-git-search.fzf").setup{
+                        -- fugitive or diffview
+                        diff_plugin = "fugitive",
+                        -- customize git in previewer
+                        -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
+                        git_flags = {},
+                        -- customize git diff in previewer
+                        -- e.g. flags such as { "--raw" }
+                        git_diff_flags = {},
+                        -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
+                        show_builtin_git_pickers = false,
+            }
+        end,
+        dependencies = {
+            "ibhagwan/fzf-lua",
+            -- to show diff splits and open commits in browser
+            "tpope/vim-fugitive",
+            -- to open commits in browser with fugitive
+            "tpope/vim-rhubarb",
+            -- OPTIONAL: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
+        },
+    }
+```
+
+With Packer
+
+```lua
+    use({
+        "aaronhallaert/advanced-git-search.nvim",
+        config = function()
+            -- optional: setup telescope before loading the extension
+            require("advanced-git-search.fzf").setup{
+                    -- Fugitive or diffview
+                    diff_plugin = "fugitive",
+                    -- Customize git in previewer
+                    -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
+                    git_flags = {},
+                    -- Customize git diff in previewer
+                    -- e.g. flags such as { "--raw" }
+                    git_diff_flags = {},
+                    -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
+                    show_builtin_git_pickers = false,
+                }
+            }
+        end,
+        requires = {
+            "ibhagwan/fzf-lua",
             -- to show diff splits and open commits in browser
             "tpope/vim-fugitive",
             -- to open commits in browser with fugitive

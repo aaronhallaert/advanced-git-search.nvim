@@ -1,6 +1,5 @@
 local utils = require("advanced_git_search.utils")
 local file = require("advanced_git_search.utils.file")
-local config = require("advanced_git_search.utils.config")
 local command_util = require("advanced_git_search.utils.command")
 
 local M = {}
@@ -102,7 +101,11 @@ local file_name_on_commit = function(commit_hash, git_relative_file_path)
         local hash = all_hashes[i]
         -- search the hash in touched_hashes
         for _, touched_hash in ipairs(touched_hashes) do
-            if string.sub(touched_hash, 1, 7) == string.sub(hash, 1, 7) then
+            if
+                touched_hash ~= nil
+                and hash ~= nil
+                and string.sub(touched_hash, 1, 7) == string.sub(hash, 1, 7)
+            then
                 last_touched_hash = touched_hash
                 break
             end

@@ -1,15 +1,16 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local git_utils = require("advanced_git_search.utils.git")
-local config = require("advanced_git_search.utils.config")
+local global_picker = require("advanced_git_search.global_picker")
 
 local pickers = require("telescope.pickers")
 local sorters = require("telescope.sorters")
 local finders = require("telescope.finders")
 
-local ags_finders = require("advanced_git_search.telescope.finders")
-local ags_previewers = require("advanced_git_search.telescope.previewers")
-local ags_mappings = require("advanced_git_search.telescope.mappings")
+local telescope_ags_finders = require("advanced_git_search.telescope.finders")
+local telescope_ags_previewers =
+    require("advanced_git_search.telescope.previewers")
+local telescope_ags_mappings = require("advanced_git_search.telescope.mappings")
 
 local M = {}
 
@@ -23,8 +24,8 @@ M.changed_on_branch = function()
                 .. " -> "
                 .. git_utils.current_branch(),
             sorter = sorters.get_fuzzy_file(),
-            finder = ags_finders.changed_files_on_current_branch_finder(),
-            previewer = ags_previewers.changed_files_on_current_branch_previewer(),
+            finder = telescope_ags_finders.changed_files_on_current_branch_finder(),
+            previewer = telescope_ags_previewers.changed_files_on_current_branch_previewer(),
         })
         :find()
 end
@@ -39,11 +40,15 @@ M.diff_branch_file = function()
         .new({
             results_title = "Local branches :: *" .. current_branch,
             prompt_title = "Branch name",
-            finder = ags_finders.git_branches_finder(),
+            finder = telescope_ags_finders.git_branches_finder(),
             sorter = sorters.get_fuzzy_file(),
-            previewer = ags_previewers.git_diff_branch_file_previewer(bufnr),
+            previewer = telescope_ags_previewers.git_diff_branch_file_previewer(
+                bufnr
+            ),
             attach_mappings = function(_, map)
-                ags_mappings.open_diff_view_current_file_selected_branch(map)
+                telescope_ags_mappings.open_diff_view_current_file_selected_branch(
+                    map
+                )
                 return true
             end,
         })
@@ -57,20 +62,37 @@ M.diff_commit_line = function()
     local s_start = vim.fn.getpos("'<")[2]
     local s_end = vim.fn.getpos("'>")[2]
 
+    if s_start == 0 or s_end == 0 then
+        vim.notify(
+            "No visual selection",
+            vim.log.levels.WARN,
+            { title = "Advanced Git Search" }
+        )
+        return
+    end
+
     -- git log -L741,751:'app/models/patients/patient.rb'\
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
     pickers
         .new({
             results_title = "Commits that affected the selected lines",
             prompt_title = "Commit message",
-            finder = ags_finders.git_log_location_finder(bufnr, s_start, s_end),
-            previewer = ags_previewers.git_diff_commit_file_previewer(bufnr),
+            finder = telescope_ags_finders.git_log_location_finder(
+                bufnr,
+                s_start,
+                s_end
+            ),
+            previewer = telescope_ags_previewers.git_diff_commit_file_previewer(
+                bufnr
+            ),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
-                ags_mappings.open_diff_view_current_file_selected_commit(map)
-                ags_mappings.open_selected_commit_in_browser(map)
-                ags_mappings.copy_commit_hash_to_clipboard(map)
-                ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                    map
+                )
+                telescope_ags_mappings.open_selected_commit_in_browser(map)
+                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                telescope_ags_mappings.show_entire_commit(map)
                 return true
             end,
         })
@@ -87,13 +109,15 @@ M.search_log_content = function()
         .new({
             results_title = "Commits",
             prompt_title = "Git log content (added, removed or updated text)",
-            finder = ags_finders.git_log_content_finder({}),
-            previewer = ags_previewers.git_diff_content_previewer(),
+            finder = telescope_ags_finders.git_log_content_finder({}),
+            previewer = telescope_ags_previewers.git_diff_content_previewer(),
             attach_mappings = function(_, map)
-                ags_mappings.open_diff_view_current_file_selected_commit(map)
-                ags_mappings.open_selected_commit_in_browser(map)
-                ags_mappings.copy_commit_hash_to_clipboard(map)
-                ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                    map
+                )
+                telescope_ags_mappings.open_selected_commit_in_browser(map)
+                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                telescope_ags_mappings.show_entire_commit(map)
                 return true
             end,
         })
@@ -111,16 +135,18 @@ M.search_log_content_file = function()
         .new({
             results_title = "Commits",
             prompt_title = "Git log content (added, removed or updated text in this file)",
-            finder = ags_finders.git_log_content_finder({
+            finder = telescope_ags_finders.git_log_content_finder({
                 bufnr = vim.fn.bufnr(),
             }),
-            previewer = ags_previewers.git_diff_content_previewer(),
+            previewer = telescope_ags_previewers.git_diff_content_previewer(),
             -- sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
-                ags_mappings.open_diff_view_current_file_selected_commit(map)
-                ags_mappings.open_selected_commit_in_browser(map)
-                ags_mappings.copy_commit_hash_to_clipboard(map)
-                ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                    map
+                )
+                telescope_ags_mappings.open_selected_commit_in_browser(map)
+                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                telescope_ags_mappings.show_entire_commit(map)
 
                 return true
             end,
@@ -135,14 +161,18 @@ M.diff_commit_file = function()
         .new({
             results_title = "Commits that affected this file (renamed files included)",
             prompt_title = "Commit message",
-            finder = ags_finders.git_log_file_finder(bufnr),
-            previewer = ags_previewers.git_diff_commit_file_previewer(bufnr),
+            finder = telescope_ags_finders.git_log_file_finder(bufnr),
+            previewer = telescope_ags_previewers.git_diff_commit_file_previewer(
+                bufnr
+            ),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
-                ags_mappings.open_diff_view_current_file_selected_commit(map)
-                ags_mappings.show_entire_commit(map)
-                ags_mappings.open_selected_commit_in_browser(map)
-                ags_mappings.copy_commit_hash_to_clipboard(map)
+                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                    map
+                )
+                telescope_ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.open_selected_commit_in_browser(map)
+                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
 
                 return true
             end,
@@ -155,103 +185,21 @@ M.checkout_reflog = function()
     pickers
         .new({
             results_title = "Git Reflog, <CR> to checkout",
-            finder = finders.new_oneshot_job({ "git", "reflog", "--date=iso" }),
+            finder = finders.new_oneshot_job(
+                require("advanced_git_search.commands.find").reflog()
+            ),
             sorter = sorters.get_fuzzy_file(),
             attach_mappings = function(_, map)
-                ags_mappings.checkout_reflog_entry(map)
+                telescope_ags_mappings.checkout_reflog_entry(map)
                 return true
             end,
         })
         :find()
 end
 
-local custom_git_functions = {
-    {
-        value = "Search in repo log content",
-        func = M.search_log_content,
-    },
-    {
-        value = "Search in file log content",
-        func = M.search_log_content_file,
-    },
-    {
-        value = "Diff current file with commit",
-        func = M.diff_commit_file,
-    },
-    {
-        value = "Diff current file with selected line history",
-        func = M.diff_commit_line,
-    },
-    {
-        value = "Diff file with branch",
-        func = M.diff_branch_file,
-    },
-    {
-        value = "Changed on current branch (experimental)",
-        func = M.changed_on_branch,
-    },
-    {
-        value = "Checkout from reflog",
-        func = M.checkout_reflog,
-    },
-}
-
-local builtin_git_functions = {
-    {
-        value = "Git commits [telescope.builtin]",
-        func = require("telescope.builtin").git_commits,
-    },
-    {
-        value = "Git branches [telescope.builtin]",
-        func = require("telescope.builtin").git_branches,
-    },
-    {
-        value = "Git status [telescope.builtin]",
-        func = require("telescope.builtin").git_status,
-    },
-    {
-        value = "Git stash [telescope.builtin]",
-        func = require("telescope.builtin").git_stash,
-    },
-}
-
-local function map_item(git_functions_table, f)
-    local t = {}
-    for k, v in pairs(git_functions_table) do
-        t[k] = f(v)
-    end
-    return t
-end
-
-local git_functions_table = function()
-    local t = {}
-    for _, v in pairs(custom_git_functions) do
-        t[#t + 1] = v
-    end
-
-    if config.show_builtin_git_pickers() then
-        for _, v in pairs(builtin_git_functions) do
-            t[#t + 1] = v
-        end
-    end
-
-    return t
-end
-
-local function execute_git_function(value)
-    for _, v in pairs(git_functions_table()) do
-        if v["value"] == value then
-            v["func"]()
-            return
-        end
-    end
-end
-
---- Opens all a selector for all advanced git search functions
+--- Opens a selector for all advanced git search functions
 M.show_custom_functions = function()
-    local keys = map_item(git_functions_table(), function(item)
-        return item["value"]
-    end)
+    local keys = global_picker.keys("telescope")
 
     pickers
         .new({
@@ -259,15 +207,23 @@ M.show_custom_functions = function()
             finder = finders.new_table(keys),
             sorter = sorters.get_fuzzy_file(),
             attach_mappings = function(_, map)
-                ags_mappings.omnimap(map, "<CR>", function(prompt_bufnr)
-                    actions.close(prompt_bufnr)
-                    local selection = action_state.get_selected_entry()
-                    execute_git_function(selection.value)
-                end)
+                telescope_ags_mappings.omnimap(
+                    map,
+                    "<CR>",
+                    function(prompt_bufnr)
+                        actions.close(prompt_bufnr)
+                        local selection = action_state.get_selected_entry()
+                        global_picker.execute_git_function(
+                            selection.value,
+                            "telescope"
+                        )
+                    end
+                )
 
                 return true
             end,
         })
         :find()
 end
+
 return M
