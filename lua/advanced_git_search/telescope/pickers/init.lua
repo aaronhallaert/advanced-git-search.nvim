@@ -6,9 +6,10 @@ local config = require("advanced_git_search.utils.config")
 local pickers = require("telescope.pickers")
 local sorters = require("telescope.sorters")
 local finders = require("telescope.finders")
-local ags_finders = require("advanced_git_search.finders")
-local ags_previewers = require("advanced_git_search.previewers")
-local ags_mappings = require("advanced_git_search.mappings")
+
+local ags_finders = require("advanced_git_search.telescope.finders")
+local ags_previewers = require("advanced_git_search.telescope.previewers")
+local ags_mappings = require("advanced_git_search.telescope.mappings")
 
 local M = {}
 
@@ -269,11 +270,4 @@ M.show_custom_functions = function()
         })
         :find()
 end
-
-vim.api.nvim_create_user_command(
-    "AdvancedGitSearch",
-    "lua require('telescope').extensions.advanced_git_search.show_custom_functions()",
-    { range = true }
-)
-
 return M

@@ -1,6 +1,8 @@
 local actions = require("telescope.actions")
-local ags_actions = require("advanced_git_search.actions")
 local action_state = require("telescope.actions.state")
+
+local ags_actions = require("advanced_git_search.actions")
+
 local file = require("advanced_git_search.utils.file")
 local git_utils = require("advanced_git_search.utils.git")
 local config = require("advanced_git_search.utils.config")
