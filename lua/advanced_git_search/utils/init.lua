@@ -28,6 +28,7 @@ M.split_string = function(inputstr, sep)
 end
 
 M.escape_chars = function(x)
+    x = x or ""
     return (
         x:gsub("%%", "%%%%")
             :gsub("^%^", "%%^")
@@ -45,6 +46,7 @@ M.escape_chars = function(x)
 end
 
 M.escape_term = function(x)
+    x = x or ""
     return (
         x:gsub("%%", "\\%%")
             :gsub("^%^", "\\%^")

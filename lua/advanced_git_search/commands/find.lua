@@ -12,6 +12,14 @@ M.git_branches = function()
     }
 end
 
+M.reflog = function()
+    return {
+        "git",
+        "reflog",
+        "--date=iso",
+    }
+end
+
 ---@param prompt string|nil
 ---@param author string|nil
 ---@param bufnr number|nil
@@ -23,12 +31,13 @@ M.git_log_content = function(prompt, author, bufnr)
         "--format='%h %as %an _ %s'",
     }
 
-    if author and author ~= "" then
+    if author and author ~= "" and author ~= '""' then
         table.insert(command, "--author=" .. author)
     end
 
-    if prompt and prompt ~= "" then
-        table.insert(command, "-G" .. prompt)
+    if prompt and prompt ~= "" and prompt ~= '""' then
+        table.insert(command, "-G")
+        table.insert(command, prompt)
         table.insert(command, "--pickaxe-all")
     end
 
@@ -53,11 +62,11 @@ M.git_log_file = function(prompt, author, bufnr)
         "--format='%h %as %an _ %s'",
     }
 
-    if author and author ~= "" then
+    if author and author ~= "" and author ~= '""' then
         table.insert(command, "--author=" .. author)
     end
 
-    if prompt and prompt ~= "" then
+    if prompt and prompt ~= "" and prompt ~= '""' then
         table.insert(command, "-s")
         table.insert(command, "-i")
         table.insert(command, "--grep=" .. prompt)
@@ -86,11 +95,11 @@ M.git_log_location = function(prompt, author, bufnr, start_line, end_line)
         "--format='%h %as %an _ %s'",
     }
 
-    if author and author ~= "" then
+    if author and author ~= "" and author ~= '""' then
         table.insert(command, "--author=" .. author)
     end
 
-    if prompt and prompt ~= "" then
+    if prompt and prompt ~= "" and prompt ~= '""' then
         table.insert(command, "-s")
         table.insert(command, "-i")
         table.insert(command, "--grep=" .. prompt)
@@ -100,7 +109,7 @@ M.git_log_location = function(prompt, author, bufnr, start_line, end_line)
 end
 
 M.changed_on_branch = function()
-    vim.tbl_flatten({
+    return vim.tbl_flatten({
         "git",
         "--no-pager",
         "diff",

@@ -12,21 +12,23 @@ M.git_diff_file = function(first_commit, second_commit, bufnr)
     local filename_on_head = file.git_relative_path(bufnr)
 
     local curr_name =
-        git_utils.file_name_on_commit(first_commit, filename_on_head)
-    local prev_name =
         git_utils.file_name_on_commit(second_commit, filename_on_head)
+    local prev_name =
+        git_utils.file_name_on_commit(first_commit, filename_on_head)
 
-    if prev_name ~= nil then
+    if prev_name ~= nil and curr_name ~= nil then
         return cmd_utils.format_git_diff_command({
             "git",
             "diff",
+            "--color=always",
             first_commit .. ":" .. prev_name,
             second_commit .. ":" .. curr_name,
         })
-    else
+    elseif prev_name == nil and curr_name ~= nil then
         return cmd_utils.format_git_diff_command({
             "git",
             "diff",
+            "--color=always",
             first_commit,
             second_commit,
             "--",
@@ -41,6 +43,7 @@ M.git_diff_base_branch = function(relative_filename)
     return cmd_utils.format_git_diff_command({
         "git",
         "diff",
+        "--color=always",
         "--diff-filter=ACMR",
         "--cached",
         "--merge-base",
@@ -63,7 +66,7 @@ M.git_diff_content = function(first_commit, second_commit, prompt)
         second_commit,
     })
 
-    if prompt and prompt ~= "" then
+    if prompt and prompt ~= "" and prompt ~= '""' then
         table.insert(command, "-G")
         table.insert(command, prompt)
     end
@@ -86,6 +89,7 @@ M.git_diff_branch = function(branch, bufnr)
         return cmd_utils.format_git_diff_command({
             "git",
             "diff",
+            "--color=always",
             branch .. ":" .. branch_filename,
             current_hash .. ":" .. file.git_relative_path(bufnr),
         })
@@ -93,6 +97,7 @@ M.git_diff_branch = function(branch, bufnr)
         return cmd_utils.format_git_diff_command({
             "git",
             "diff",
+            "--color=always",
             branch,
             current_hash,
             "--",

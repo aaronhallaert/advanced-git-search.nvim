@@ -1,19 +1,66 @@
-local preview_utils = require("advanced_git_search.fzf.previewers.utils")
-local cmd_utils = require("advanced_git_search.commands.utils")
-local finder_cmds = require("advanced_git_search.commands.find")
+local fzf_preview_utils = require("advanced_git_search.fzf.previewers.utils")
+local command_utils = require("advanced_git_search.commands.utils")
+local finder_commands = require("advanced_git_search.commands.find")
 local utils = require("advanced_git_search.utils")
 
 local M = {}
 
-M.git_log_content_finder = function(query)
-    preview_utils.set_last_query(query)
+---@param query string
+---@param bufnr number|nil
+---@return string
+M.git_log_content_finder = function(query, bufnr)
+    fzf_preview_utils.set_last_query(query)
 
-    local prompt, author = cmd_utils.split_query_from_author(query)
+    local prompt, author = command_utils.split_query_from_author(query)
 
-    return table.concat(
-        finder_cmds.git_log_content(utils.escape_term(prompt), author),
+    author = author or ""
+    local command = table.concat(
+        finder_commands.git_log_content(
+            string.format('"%s"', utils.escape_term(prompt)),
+            string.format('"%s"', author),
+            bufnr
+        ),
         " "
     )
+
+    return command
+end
+
+M.git_log_location_finder = function(query, bufnr, s_start, s_end)
+    fzf_preview_utils.set_last_query(query)
+
+    local prompt, author = command_utils.split_query_from_author(query)
+
+    author = author or ""
+    local command = table.concat(
+        finder_commands.git_log_location(
+            string.format('"%s"', utils.escape_term(prompt)),
+            string.format('"%s"', author),
+            bufnr,
+            s_start,
+            s_end
+        ),
+        " "
+    )
+
+    return command
+end
+
+M.git_log_file_finder = function(query, bufnr)
+    fzf_preview_utils.set_last_query(query)
+
+    local prompt, author = command_utils.split_query_from_author(query)
+
+    local command = table.concat(
+        finder_commands.git_log_file(
+            string.format('"%s"', utils.escape_term(prompt)),
+            string.format('"%s"', author),
+            bufnr
+        ),
+        " "
+    )
+
+    return command
 end
 
 return M

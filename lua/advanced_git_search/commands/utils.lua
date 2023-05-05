@@ -57,6 +57,8 @@ M.split_query_from_author = function(query)
         author = split[2]
     end
 
+    prompt = prompt or ""
+    author = author or ""
     return prompt, author
 end
 
