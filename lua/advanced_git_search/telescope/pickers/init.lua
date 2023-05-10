@@ -139,7 +139,6 @@ M.search_log_content_file = function()
                 bufnr = vim.fn.bufnr(),
             }),
             previewer = telescope_ags_previewers.git_diff_content_previewer(),
-            -- sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 telescope_ags_mappings.open_diff_view_current_file_selected_commit(
                     map
