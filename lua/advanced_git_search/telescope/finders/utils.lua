@@ -1,4 +1,5 @@
 local utils = require("advanced_git_search.utils")
+local entry_display = require("telescope.pickers.entry_display")
 
 local M = {}
 local last_prompt = nil
@@ -15,18 +16,39 @@ M.git_log_entry_maker = function(entry)
     local hash = attrs[1]
     local date = attrs[2]
     local author = attrs[3]
+    for i = 4, #attrs do
+        author = author .. " " .. attrs[i]
+    end
+
     -- join split from second element
     local message = split[2]
     if #split > 2 then
         for i = 3, #split do
-            message = message .. "_" .. split[i]
+            message = message .. " " .. split[i]
         end
+    end
+
+    local displayer = entry_display.create({
+        separator = " ",
+        items = {
+            { width = 7 },
+            { width = 7 },
+            { remaining = true },
+        },
+    })
+
+    local make_display = function(display_entry)
+        return displayer({
+            { display_entry.opts.commit_hash, "TelescopeResultsIdentifier" },
+            { display_entry.opts.author, "TelescopeResultsVariable" },
+            { display_entry.opts.message, "TelescopeResultsConstant" },
+        })
     end
 
     return {
         value = entry,
-        display = date .. " by " .. author .. " --" .. message,
-        -- display = hash .. " @ " .. date .. " by " .. author .. " --" .. message,
+        -- display = date .. " by " .. author .. " --" .. message,
+        display = make_display,
         ordinal = author .. " " .. message,
         preview_title = hash .. " -- " .. message,
         opts = {
