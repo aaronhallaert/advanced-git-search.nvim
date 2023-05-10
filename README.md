@@ -29,7 +29,7 @@ execute `:AdvancedGitSearch`, choose your picker and press `<CR>`
 #### 🧎 fzf-lua
 
 ```lua
-require('advanced-git-search.fzf').{function_name}()
+require('advanced_git_search.fzf').{function_name}()
 ```
 
 > or through another picker
@@ -269,7 +269,7 @@ With Lazy
         "aaronhallaert/advanced-git-search.nvim",
         config = function()
             -- optional: setup telescope before loading the extension
-            require("advanced-git-search.fzf").setup{
+            require("advanced_git_search.fzf").setup{
                         -- fugitive or diffview
                         diff_plugin = "fugitive",
                         -- customize git in previewer
@@ -302,7 +302,7 @@ With Packer
         "aaronhallaert/advanced-git-search.nvim",
         config = function()
             -- optional: setup telescope before loading the extension
-            require("advanced-git-search.fzf").setup{
+            require("advanced_git_search.fzf").setup{
                     -- Fugitive or diffview
                     diff_plugin = "fugitive",
                     -- Customize git in previewer
