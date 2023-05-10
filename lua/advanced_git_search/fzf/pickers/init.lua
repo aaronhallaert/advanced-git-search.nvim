@@ -194,7 +194,7 @@ end
 
 --- Opens a selector for all advanced git search functions
 M.show_custom_functions = function()
-    local keys = global_picker.keys("telescope")
+    local keys = global_picker.keys("fzf_lua")
 
     local opts = {
         prompt = "AdvancedGitSearch> ",
