@@ -14,11 +14,15 @@ local telescope_ags_mappings = require("advanced_git_search.telescope.mappings")
 
 local M = {}
 
+local config = require("advanced_git_search.utils.config")
+
 --- Opens a Telescope window with all files changed on the current branch
 --- Only committed changes will be displayed
 M.changed_on_branch = function()
+    local theme_opts = config.telescope_theme("changed_on_branch")
+
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             results_title = "Modified "
                 .. git_utils.base_branch()
                 .. " -> "
@@ -26,7 +30,7 @@ M.changed_on_branch = function()
             sorter = sorters.get_fuzzy_file(),
             finder = telescope_ags_finders.changed_files_on_current_branch_finder(),
             previewer = telescope_ags_previewers.changed_files_on_current_branch_previewer(),
-        })
+        }, theme_opts))
         :find()
 end
 
@@ -36,8 +40,10 @@ M.diff_branch_file = function()
     local current_branch = git_utils.current_branch()
     local bufnr = vim.fn.bufnr()
 
+    local theme_opts = config.telescope_theme("diff_branch_file")
+
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             results_title = "Local branches :: *" .. current_branch,
             prompt_title = "Branch name",
             finder = telescope_ags_finders.git_branches_finder(),
@@ -51,7 +57,7 @@ M.diff_branch_file = function()
                 )
                 return true
             end,
-        })
+        }, theme_opts))
         :find()
 end
 
@@ -61,6 +67,8 @@ M.diff_commit_line = function()
     local bufnr = vim.fn.bufnr()
     local s_start = vim.fn.getpos("'<")[2]
     local s_end = vim.fn.getpos("'>")[2]
+
+    local theme_opts = config.telescope_theme("diff_commit_line")
 
     if s_start == 0 or s_end == 0 then
         vim.notify(
@@ -74,7 +82,7 @@ M.diff_commit_line = function()
     -- git log -L741,751:'app/models/patients/patient.rb'\
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             results_title = "Commits that affected the selected lines",
             prompt_title = "Commit message",
             finder = telescope_ags_finders.git_log_location_finder(
@@ -95,7 +103,7 @@ M.diff_commit_line = function()
                 telescope_ags_mappings.show_entire_commit(map)
                 return true
             end,
-        })
+        }, theme_opts))
         :find()
 end
 
@@ -103,10 +111,12 @@ end
 --- Query is used to filter the results based on the
 --- content of the commit (added or removed text).
 M.search_log_content = function()
+    local theme_opts = config.telescope_theme("search_log_content")
+
     -- git log -L741,751:'app/models/patients/patient.rb' \
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             results_title = "Commits",
             prompt_title = "Git log content (added, removed or updated text)",
             finder = telescope_ags_finders.git_log_content_finder({}),
@@ -120,7 +130,7 @@ M.search_log_content = function()
                 telescope_ags_mappings.show_entire_commit(map)
                 return true
             end,
-        })
+        }, theme_opts))
         :find()
 end
 
@@ -129,10 +139,12 @@ M.search_log_content_file = function()
     -- local file_name = vim.fn.expand("%")
     -- local relative_file_name = vim.fn.expand("%:~:.")
 
+    local theme_opts = config.telescope_theme("search_log_content_file")
+
     -- git log -L741,751:'app/models/patients/patient.rb' \
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             results_title = "Commits",
             prompt_title = "Git log content (added, removed or updated text in this file)",
             finder = telescope_ags_finders.git_log_content_finder({
@@ -149,15 +161,18 @@ M.search_log_content_file = function()
 
                 return true
             end,
-        })
+        }, theme_opts))
         :find()
 end
 
 -- Opens a Telescope window with a list of git commits which changed the current file (renames included)
 M.diff_commit_file = function()
     local bufnr = vim.fn.bufnr()
+
+    local theme_opts = config.telescope_theme("diff_commit_file")
+
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             results_title = "Commits that affected this file (renamed files included)",
             prompt_title = "Commit message",
             finder = telescope_ags_finders.git_log_file_finder(bufnr),
@@ -175,14 +190,16 @@ M.diff_commit_file = function()
 
                 return true
             end,
-        })
+        }, theme_opts))
         :find()
 end
 
 --- Opens a Telescope window with all reflog entries
 M.checkout_reflog = function()
+    local theme_opts = config.telescope_theme("checkout_reflog")
+
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             results_title = "Git Reflog, <CR> to checkout",
             finder = finders.new_oneshot_job(
                 require("advanced_git_search.commands.find").reflog()
@@ -192,7 +209,7 @@ M.checkout_reflog = function()
                 telescope_ags_mappings.checkout_reflog_entry(map)
                 return true
             end,
-        })
+        }, theme_opts))
         :find()
 end
 
@@ -200,8 +217,10 @@ end
 M.show_custom_functions = function()
     local keys = global_picker.keys("telescope")
 
+    local theme_opts = config.telescope_theme("show_custom_functions")
+
     pickers
-        .new({
+        .new(vim.tbl_extend("force", {
             prompt_title = "Git actions",
             finder = finders.new_table(keys),
             sorter = sorters.get_fuzzy_file(),
@@ -221,7 +240,7 @@ M.show_custom_functions = function()
 
                 return true
             end,
-        })
+        }, theme_opts))
         :find()
 end
 

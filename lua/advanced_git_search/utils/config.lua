@@ -32,6 +32,28 @@ M.git_diff_flags = function()
     return git_diff_flags
 end
 
+M.telescope_theme = function(function_name)
+    local themes = require("telescope.themes")
+    local theme = config["telescope_theme"][function_name] or {}
+
+    local theme_opts = {}
+    -- apply theme
+    if type(theme) == "table" then
+        theme_opts = vim.tbl_extend("force", theme_opts, theme)
+    elseif type(theme) == "string" then
+        if themes["get_" .. theme] == nil then
+            vim.notify_once(
+                "advanced git search theme »" .. theme .. "« not found",
+                vim.log.levels.WARN
+            )
+        else
+            theme_opts = themes["get_" .. theme](theme_opts)
+        end
+    end
+
+    return theme_opts
+end
+
 M.git_flags = function()
     local git_flags = config["git_flags"] or {}
 
