@@ -145,7 +145,9 @@ M.diff_branch_file = function()
 
     require("fzf-lua").fzf_exec(
         table.concat(
-            require("advanced_git_search.commands.find").git_branches(),
+            require("advanced_git_search.commands.find").git_branches({
+                format_with_quotes = true,
+            }),
             " "
         ),
         opts

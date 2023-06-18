@@ -4,11 +4,20 @@ local git_utils = require("advanced_git_search.utils.git")
 -- Specify shell commands for each finders in table format
 local M = {}
 
-M.git_branches = function()
+M.git_branches = function(opts)
+    opts = opts or { format_with_quotes = false }
+
+    local format
+    if opts["format_with_quotes"] then
+        format = "--format='%(refname:short)'"
+    else
+        format = "--format=%(refname:short)"
+    end
+
     return {
         "git",
         "branch",
-        "--format='%(refname:short)'",
+        format,
     }
 end
 
