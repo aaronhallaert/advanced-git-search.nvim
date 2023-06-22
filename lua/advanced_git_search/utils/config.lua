@@ -34,7 +34,8 @@ end
 
 M.telescope_theme = function(function_name)
     local themes = require("telescope.themes")
-    local theme = config["telescope_theme"][function_name] or {}
+    local telescope_theme_config = config["telescope_theme"] or {}
+    local theme = telescope_theme_config[function_name] or {}
 
     local theme_opts = {}
     -- apply theme
