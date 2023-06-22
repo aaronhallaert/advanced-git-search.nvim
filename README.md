@@ -4,48 +4,24 @@ An advanced git search extension for `Telescope` and `fzf-lua`.
 
 Search your git history by commit message, content and author in Neovim
 
-## 🖥️ Usage
+## 🚀 Usage
 
-- [Demo](https://www.youtube.com/watch?v=bO0uYLlHtYo)
+[Demo](https://www.youtube.com/watch?v=bO0uYLlHtYo)
 
-### 📖 Open a picker
+- __📖 Open a picker__
 
-#### 🔭 Telescope
+    `:AdvancedGitSearch` or `:AdvancedGitSearch {command}`
 
-```vim
-:Telescope advanced_git_search {function_name}
-```
+- __🔎 Enter a query__
 
-> or in lua
+    Your usual search experience. See the individual commands for the grep behaviour.
 
-```lua
-require('telescope').extensions.advanced_git_search.{function_name}()
-```
+- __✏️ Further search on commit author with `@`__
 
-> or through another Telescope picker
-
-execute `:AdvancedGitSearch`, choose your picker and press `<CR>`
-
-#### 🧎 fzf-lua
-
-```lua
-require('advanced_git_search.fzf').{function_name}()
-```
-
-> or through another picker
-
-execute `:AdvancedGitSearch`, choose your picker and press `<CR>`
-
-### 🔎 Enter a query
-
-Your usual search experience. See the individual commands for the grep behaviour.
-
-### ✏️ Further search on commit author with `@`
-
-The prompt is split on `@`. Everything following the `@` is the pattern for
+    The prompt is split on `@`. Everything following the `@` is the pattern for
 the author name.
 
-## ⚡️Commands
+## ⚡️ Commands
 
 ### 1. search_log_content -- Search in repo log content
 
@@ -95,34 +71,7 @@ selected lines
 
 _Grep behaviour_: filter on commit message.
 
-#### How to use
-
-> _This workaround only applies when you use the following command. (Telescope)_
->
-> ```vim
-> :Telescope advanced_git_search diff_commit_line
-> ```
-
-First you have to select the lines in visual mode, then go back to normal
-mode and execute this command.
-To make a bit easier, you can wrap it in a user command and define a keybind:
-
-```lua
-vim.api.nvim_create_user_command(
-    "DiffCommitLine",
-    "lua require('telescope').extensions.advanced_git_search.diff_commit_line()",
-    { range = true }
-)
-
-vim.api.nvim_set_keymap(
-    "v",
-    "<leader>dcl",
-    ":DiffCommitLine<CR>",
-    { noremap = true }
-)
-```
-
-> No extra setup is needed when you use `:AdvancedGitSearch`.
+> Use `:'<,'>AdvancedGitSearch diff_commit_line` (with a visual range).
 
 #### _Keymaps_
 

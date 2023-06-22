@@ -1,15 +1,12 @@
 local pickers = require("advanced_git_search.telescope.pickers")
 local config = require("advanced_git_search.utils.config")
+local setup = require("advanced_git_search.utils.setup")
 
 return require("telescope").register_extension({
     setup = function(ext_config, _)
         config.setup(ext_config)
 
-        vim.api.nvim_create_user_command(
-            "AdvancedGitSearch",
-            "lua require('telescope').extensions.advanced_git_search.show_custom_functions()",
-            { range = true }
-        )
+        setup.setup_user_command(pickers)
     end,
     exports = pickers,
 })
