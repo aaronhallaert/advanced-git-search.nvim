@@ -1,4 +1,4 @@
-# Advanced Git Search
+# 🍃 Advanced Git Search
 
 An advanced git search extension for `Telescope` and `fzf-lua`.
 
@@ -178,156 +178,152 @@ Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
 
 ## ⚙️ Installation
 
+### Config
+
+```lua
+{
+    -- fugitive or diffview
+    diff_plugin = "fugitive",
+    -- customize git in previewer
+    -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
+    git_flags = {},
+    -- customize git diff in previewer
+    -- e.g. flags such as { "--raw" }
+    git_diff_flags = {},
+    -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
+    show_builtin_git_pickers = false,
+
+    -- Telescope layout setup
+    telescope_theme = {
+        function_name_1 = {
+            -- Theme options
+        },
+        function_name_2 = "dropdown"
+        -- e.g. realistic example
+        show_custom_functions = {
+            layout_config = { width = 0.4, height = 0.4 },
+        },
+
+    }
+}
+```
+
+### Dependencies
+
+```lua
+{
+    "nvim-telescope/telescope.nvim",
+    -- to show diff splits and open commits in browser
+    "tpope/vim-fugitive",
+    -- to open commits in browser with fugitive
+    "tpope/vim-rhubarb",
+    -- optional: to replace the diff from fugitive with diffview.nvim
+    -- (fugitive is still needed to open in browser)
+    -- "sindrets/diffview.nvim",
+}
+```
+
+
 ### Telescope
 
-With Lazy
+<details>
+<summary>Lazy</summary>
+To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
-    {
-        "aaronhallaert/advanced-git-search.nvim",
-        config = function()
-            -- optional: setup telescope before loading the extension
-            require("telescope").setup{
-                -- move this to the place where you call the telescope setup function
-                extensions = {
-                    advanced_git_search = {
-                        -- fugitive or diffview
-                        diff_plugin = "fugitive",
-                        -- customize git in previewer
-                        -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
-                        git_flags = {},
-                        -- customize git diff in previewer
-                        -- e.g. flags such as { "--raw" }
-                        git_diff_flags = {},
-                        -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
-                        show_builtin_git_pickers = false,
+{
+    "aaronhallaert/advanced-git-search.nvim",
+    config = function()
+        -- optional: setup telescope before loading the extension
+        require("telescope").setup{
+            -- move this to the place where you call the telescope setup function
+            extensions = {
+                advanced_git_search = {
+                        -- See Config
                     }
-                }
             }
+        }
 
-            require("telescope").load_extension("advanced_git_search")
-        end,
-        dependencies = {
-            "nvim-telescope/telescope.nvim",
-            -- to show diff splits and open commits in browser
-            "tpope/vim-fugitive",
-            -- to open commits in browser with fugitive
-            "tpope/vim-rhubarb",
-            -- OPTIONAL: to replace the diff from fugitive with diffview.nvim
-            -- (fugitive is still needed to open in browser)
-            -- "sindrets/diffview.nvim",
-        },
-    }
+        require("telescope").load_extension("advanced_git_search")
+    end,
+    dependencies = {
+        --- See dependencies
+    },
+}
 ```
+</details>
 
-With Packer
+<details>
+<summary>Packer</summary>
+
+To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
-    use({
-        "aaronhallaert/advanced-git-search.nvim",
-        config = function()
-            -- optional: setup telescope before loading the extension
-            require("telescope").setup{
-                -- move this to the place where you call the telescope setup function
-                extensions = {
-                    advanced_git_search = {
-                        -- Fugitive or diffview
-                        diff_plugin = "fugitive",
-                        -- Customize git in previewer
-                        -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
-                        git_flags = {},
-                        -- Customize git diff in previewer
-                        -- e.g. flags such as { "--raw" }
-                        git_diff_flags = {},
-                        -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
-                        show_builtin_git_pickers = false,
-                    }
+use({
+    "aaronhallaert/advanced-git-search.nvim",
+    config = function()
+        -- optional: setup telescope before loading the extension
+        require("telescope").setup{
+            -- move this to the place where you call the telescope setup function
+            extensions = {
+                advanced_git_search = {
+                    -- Insert Config here
                 }
             }
+        }
 
-            require("telescope").load_extension("advanced_git_search")
-        end,
-        requires = {
-            "nvim-telescope/telescope.nvim",
-            -- to show diff splits and open commits in browser
-            "tpope/vim-fugitive",
-            -- to open commits in browser with fugitive
-            "tpope/vim-rhubarb",
-            -- optional: to replace the diff from fugitive with diffview.nvim
-            -- (fugitive is still needed to open in browser)
-            -- "sindrets/diffview.nvim",
-        },
-    })
+        require("telescope").load_extension("advanced_git_search")
+    end,
+    requires = {
+        -- Insert Dependencies here
+    },
+})
 ```
+</details>
 
 ### Fzf-lua
 
-With Lazy
+<details>
+<summary>Lazy</summary>
+To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
-    {
-        "aaronhallaert/advanced-git-search.nvim",
-        config = function()
-            -- optional: setup telescope before loading the extension
-            require("advanced_git_search.fzf").setup{
-                        -- fugitive or diffview
-                        diff_plugin = "fugitive",
-                        -- customize git in previewer
-                        -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
-                        git_flags = {},
-                        -- customize git diff in previewer
-                        -- e.g. flags such as { "--raw" }
-                        git_diff_flags = {},
-                        -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
-                        show_builtin_git_pickers = false,
-            }
-        end,
-        dependencies = {
-            "ibhagwan/fzf-lua",
-            -- to show diff splits and open commits in browser
-            "tpope/vim-fugitive",
-            -- to open commits in browser with fugitive
-            "tpope/vim-rhubarb",
-            -- OPTIONAL: to replace the diff from fugitive with diffview.nvim
-            -- (fugitive is still needed to open in browser)
-            -- "sindrets/diffview.nvim",
-        },
-    }
+{
+    "aaronhallaert/advanced-git-search.nvim",
+    config = function()
+        require("advanced_git_search.fzf").setup{
+            -- Insert Config here
+        }
+    end,
+    dependencies = {
+        -- Insert Dependencies here
+    },
+}
 ```
+  
+</details>
 
-With Packer
+<details>
+<summary>Packer</summary>
+
+To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
-    use({
-        "aaronhallaert/advanced-git-search.nvim",
-        config = function()
-            -- optional: setup telescope before loading the extension
-            require("advanced_git_search.fzf").setup{
-                    -- Fugitive or diffview
-                    diff_plugin = "fugitive",
-                    -- Customize git in previewer
-                    -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
-                    git_flags = {},
-                    -- Customize git diff in previewer
-                    -- e.g. flags such as { "--raw" }
-                    git_diff_flags = {},
-                    -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
-                    show_builtin_git_pickers = false,
-                }
+use({
+    "aaronhallaert/advanced-git-search.nvim",
+    config = function()
+        require("advanced_git_search.fzf").setup{
+                -- Insert Config here
             }
-        end,
-        requires = {
-            "ibhagwan/fzf-lua",
-            -- to show diff splits and open commits in browser
-            "tpope/vim-fugitive",
-            -- to open commits in browser with fugitive
-            "tpope/vim-rhubarb",
-            -- optional: to replace the diff from fugitive with diffview.nvim
-            -- (fugitive is still needed to open in browser)
-            -- "sindrets/diffview.nvim",
-        },
-    })
+        }
+    end,
+    requires = {
+        -- Insert Dependencies here
+    },
+})
 ```
+</details>
+
 
 ### Prerequisites
 
