@@ -12,9 +12,8 @@ M.search_log_content = function()
         prompt = "Log> ",
         exec_empty_query = true,
         func_async_callback = false,
-        fzf_opts = {
-            ["--preview"] = fzf_previewers.git_diff_content_previewer(),
-        },
+        previewer = fzf_previewers.git_diff_content_previewer(),
+
         fn_transform = function(x)
             return fzf_picker_utils.make_entry(x)
         end,
@@ -33,15 +32,13 @@ M.search_log_content = function()
 end
 
 M.search_log_content_file = function()
-    local bufnr = vim.fn.bufnr()
+    local bufnr = vim.api.nvim_get_current_buf()
 
     local opts = {
         prompt = "Log> ",
-        exec_empty_query = false,
+        exec_empty_query = true,
         func_async_callback = false,
-        fzf_opts = {
-            ["--preview"] = fzf_previewers.git_diff_content_previewer(),
-        },
+        previewer = fzf_previewers.git_diff_content_file_previewer(),
         fn_transform = function(x)
             return fzf_picker_utils.make_entry(x)
         end,
@@ -77,9 +74,7 @@ M.diff_commit_line = function()
         prompt = "Commit message> ",
         exec_empty_query = true,
         func_async_callback = false,
-        fzf_opts = {
-            ["--preview"] = fzf_previewers.git_diff_file_previewer(bufnr),
-        },
+        previewer = fzf_previewers.git_diff_file_previewer,
         fn_transform = function(x)
             return fzf_picker_utils.make_entry(x)
         end,
@@ -104,9 +99,7 @@ M.diff_commit_file = function()
         prompt = "Commit message> ",
         exec_empty_query = true,
         func_async_callback = false,
-        fzf_opts = {
-            ["--preview"] = fzf_previewers.git_diff_file_previewer(bufnr),
-        },
+        previewer = fzf_previewers.git_diff_file_previewer,
         fn_transform = function(x)
             return fzf_picker_utils.make_entry(x)
         end,
@@ -130,11 +123,7 @@ M.diff_branch_file = function()
     local opts = {
         prompt = "Branch> ",
         func_async_callback = false,
-        fzf_opts = {
-            ["--preview"] = fzf_previewers.git_diff_branch_file_previewer(
-                bufnr
-            ),
-        },
+        previewer = fzf_previewers.git_diff_branch_file_previewer,
         actions = vim.tbl_extend(
             "keep",
             fzf_mappings.open_commit_in_brower(),
@@ -158,9 +147,7 @@ M.changed_on_branch = function()
     local opts = {
         prompt = "File> ",
         func_async_callback = false,
-        fzf_opts = {
-            ["--preview"] = fzf_previewers.git_diff_base_branch(),
-        },
+        previewer = fzf_previewers.git_diff_base_branch_previewer,
     }
 
     require("fzf-lua").fzf_exec(

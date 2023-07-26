@@ -54,21 +54,39 @@ M.git_diff_base_branch = function(relative_filename)
 end
 
 --- Shows a diff of 2 commit hashes and greps on prompt string
---- @param first_commit string
+--- @param first_commit string|nil
 --- @param second_commit string
 --- @param prompt string
-M.git_diff_content = function(first_commit, second_commit, prompt)
-    local command = cmd_utils.format_git_diff_command({
-        "git",
-        "diff",
-        "--color=always",
-        first_commit,
-        second_commit,
-    })
+--- @param bufnr number|nil
+M.git_diff_content = function(first_commit, second_commit, prompt, bufnr)
+    local command = {}
+
+    if first_commit == nil then
+        command = cmd_utils.format_git_diff_command({
+            "git",
+            "show",
+            "--color=always",
+            second_commit,
+        })
+    else
+        command = cmd_utils.format_git_diff_command({
+            "git",
+            "diff",
+            "--color=always",
+            first_commit,
+            second_commit,
+        })
+    end
 
     if prompt and prompt ~= "" and prompt ~= '""' then
         table.insert(command, "-G")
         table.insert(command, prompt)
+    end
+
+    if bufnr and bufnr ~= "" then
+        table.insert(command, "--follow")
+        local filename = file.relative_path(bufnr)
+        table.insert(command, filename)
     end
 
     return command
@@ -78,8 +96,6 @@ end
 --- @param branch string
 --- @param bufnr number
 M.git_diff_branch = function(branch, bufnr)
-    local current_hash = git_utils.branch_hash("HEAD")
-
     local branch_filename = git_utils.file_name_on_commit(
         git_utils.branch_hash(branch),
         file.git_relative_path(bufnr)
@@ -91,7 +107,8 @@ M.git_diff_branch = function(branch, bufnr)
             "diff",
             "--color=always",
             branch .. ":" .. branch_filename,
-            current_hash .. ":" .. file.git_relative_path(bufnr),
+            "--",
+            file.relative_path(bufnr),
         })
     else
         return cmd_utils.format_git_diff_command({
@@ -99,7 +116,6 @@ M.git_diff_branch = function(branch, bufnr)
             "diff",
             "--color=always",
             branch,
-            current_hash,
             "--",
             file.relative_path(bufnr),
         })

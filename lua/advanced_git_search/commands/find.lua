@@ -50,7 +50,7 @@ M.git_log_content = function(prompt, author, bufnr)
         table.insert(command, "--pickaxe-all")
     end
 
-    if bufnr then
+    if bufnr and bufnr ~= "" then
         table.insert(command, "--follow")
         local filename = file.relative_path(bufnr)
         table.insert(command, filename)

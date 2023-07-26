@@ -25,6 +25,20 @@ M.previous_commit_hash = function(commit_hash)
     local command = "git rev-parse " .. commit_hash .. "~"
 
     local output = command_util.execute(command)
+
+    -- if git rev-parse returns "~", it means that the commit_hash was the first
+    if string.match(output, "~") then
+        return nil
+    end
+
+    return string.gsub(output, "\n", "")
+end
+
+M.commit_info = function(commit_hash)
+    local command = 'git show --no-patch --no-notes --pretty="%an %cs %s" '
+        .. commit_hash
+
+    local output = command_util.execute(command)
     return string.gsub(output, "\n", "")
 end
 
