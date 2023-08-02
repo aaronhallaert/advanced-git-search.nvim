@@ -18,6 +18,17 @@ M.omnimap = omnimap
 
 -- create a local function and assign it to a map to get which_key description
 -------------------------------------------------------------------------------
+local toggle_date_author = function(prompt_bufnr)
+    require("advanced_git_search.telescope.finders.utils").toggle_show_date_instead_of_author()
+    action_state.get_current_picker(prompt_bufnr):refresh()
+end
+
+M.toggle_entry_value = function(map)
+    omnimap(map, "<C-w>", toggle_date_author)
+end
+
+-------------------------------------------------------------------------------
+
 local open_commit_in_browser = function(prompt_bufnr)
     actions.close(prompt_bufnr)
     local selection = action_state.get_selected_entry()

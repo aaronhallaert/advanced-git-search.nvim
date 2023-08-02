@@ -101,6 +101,7 @@ M.diff_commit_line = function()
                 telescope_ags_mappings.open_selected_commit_in_browser(map)
                 telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
                 telescope_ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.toggle_entry_value(map)
                 return true
             end,
         }, theme_opts))
@@ -128,6 +129,7 @@ M.search_log_content = function()
                 telescope_ags_mappings.open_selected_commit_in_browser(map)
                 telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
                 telescope_ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.toggle_entry_value(map)
                 return true
             end,
         }, theme_opts))
@@ -158,6 +160,7 @@ M.search_log_content_file = function()
                 telescope_ags_mappings.open_selected_commit_in_browser(map)
                 telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
                 telescope_ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.toggle_entry_value(map)
 
                 return true
             end,
@@ -185,6 +188,7 @@ M.diff_commit_file = function()
                     map
                 )
                 telescope_ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.toggle_entry_value(map)
                 telescope_ags_mappings.open_selected_commit_in_browser(map)
                 telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
 

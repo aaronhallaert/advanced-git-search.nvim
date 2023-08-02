@@ -32,6 +32,10 @@ M.git_diff_flags = function()
     return git_diff_flags
 end
 
+M.entry_default_author_or_date = function()
+    return config["entry_default_author_or_date"] or "author"
+end
+
 M.telescope_theme = function(function_name)
     local themes = require("telescope.themes")
     local telescope_theme_config = config["telescope_theme"] or {}
