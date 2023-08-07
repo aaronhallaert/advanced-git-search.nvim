@@ -35,6 +35,7 @@ _Grep behaviour_: filter on added, updated or removed code (log content: `-G` op
 - `<C-e>` show the entire commit for all files in neovim with diff plugin
 - `<C-o>` Open the selected commit in the browser
 - `<C-y>` copy the commit hash to clipboard
+- `<C-w>` toggle date and author in entry
 
 ### 2. search_log_content_file -- Search in file log content
 
@@ -49,6 +50,7 @@ _Grep behaviour_: filter on added, updated or removed code (log content: `-G` op
 - `<C-e>` show the entire commit for all files in neovim with diff plugin
 - `<C-o>` Open the selected commit in the browser
 - `<C-y>` copy the commit hash to clipboard
+- `<C-w>` toggle date and author in entry
 
 ### 3. diff_commit_file -- Diff current file with commit
 
@@ -63,6 +65,7 @@ _Grep behaviour_: filter on commit message.
 - `<C-e>` show the entire commit for all files in neovim with diff plugin
 - `<C-o>` Open the selected commit in the browser
 - `<C-y>` copy the commit hash to clipboard
+- `<C-w>` toggle date and author in entry
 
 ### 4. diff_commit_line -- Diff current file with selected line history
 
@@ -79,6 +82,7 @@ _Grep behaviour_: filter on commit message.
 - `<C-e>` show the entire commit for all files in neovim with diff plugin
 - `<C-o>` opens a the selected commit in the browser
 - `<C-y>` copy the commit hash to clipboard
+- `<C-w>` toggle date and author in entry
 
 ### 5. diff_branch_file -- Diff file with branch
 
@@ -141,6 +145,7 @@ Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
     git_diff_flags = {},
     -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
     show_builtin_git_pickers = false,
+    entry_default_author_or_date = "author", -- one of "author" or "date"
 
     -- Telescope layout setup
     telescope_theme = {

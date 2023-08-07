@@ -23,7 +23,8 @@ M.search_log_content = function()
             fzf_mappings.open_commit_in_brower(),
             fzf_mappings.open_diff_buffer_with_selected_commit(bufnr),
             fzf_mappings.show_entire_commit(),
-            fzf_mappings.copy_commit_hash()
+            fzf_mappings.copy_commit_hash(),
+            fzf_mappings.toggle_entry_value()
         ),
     }
 
@@ -37,7 +38,7 @@ M.search_log_content_file = function()
 
     local opts = {
         prompt = "Log> ",
-        exec_empty_query = false,
+        exec_empty_query = true,
         func_async_callback = false,
         fzf_opts = {
             ["--preview"] = fzf_previewers.git_diff_content_previewer(),
@@ -50,7 +51,8 @@ M.search_log_content_file = function()
             fzf_mappings.open_commit_in_brower(),
             fzf_mappings.open_diff_buffer_with_selected_commit(bufnr),
             fzf_mappings.show_entire_commit(),
-            fzf_mappings.copy_commit_hash()
+            fzf_mappings.copy_commit_hash(),
+            fzf_mappings.toggle_entry_value()
         ),
     }
 
@@ -88,7 +90,8 @@ M.diff_commit_line = function()
             fzf_mappings.open_commit_in_brower(),
             fzf_mappings.open_diff_buffer_with_selected_commit(bufnr),
             fzf_mappings.show_entire_commit(),
-            fzf_mappings.copy_commit_hash()
+            fzf_mappings.copy_commit_hash(),
+            fzf_mappings.toggle_entry_value()
         ),
     }
 
@@ -115,7 +118,8 @@ M.diff_commit_file = function()
             fzf_mappings.open_commit_in_brower(),
             fzf_mappings.open_diff_buffer_with_selected_commit(bufnr),
             fzf_mappings.show_entire_commit(),
-            fzf_mappings.copy_commit_hash()
+            fzf_mappings.copy_commit_hash(),
+            fzf_mappings.toggle_entry_value()
         ),
     }
 

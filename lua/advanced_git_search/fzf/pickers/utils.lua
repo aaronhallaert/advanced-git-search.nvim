@@ -1,7 +1,16 @@
 local color = require("fzf-lua").utils.ansi_codes
 local utils = require("advanced_git_search.utils")
+local config = require("advanced_git_search.utils.config")
 
 local M = {}
+
+local show_date_instead_of_author = (
+    config.entry_default_author_or_date() == "date"
+)
+
+M.toggle_show_date_instead_of_author = function()
+    show_date_instead_of_author = not show_date_instead_of_author
+end
 
 M.make_entry = function(entry)
     if entry == "" or entry == nil then
@@ -13,7 +22,7 @@ M.make_entry = function(entry)
     local split = utils.split_string(cleaned, "_")
     local attrs = utils.split_string(split[1])
     local hash = attrs[1]
-    -- local date = attrs[2]
+    local date = attrs[2]
     local author = ""
     for i = 3, #attrs do
         author = author .. attrs[i] .. " "
@@ -27,9 +36,17 @@ M.make_entry = function(entry)
     end
 
     -- NOTE: make sure the first value is the commit hash
-    return color.magenta(hash)
-        .. color.cyan(" @" .. author)
-        .. color.yellow(message)
+    local final_entry
+    if show_date_instead_of_author then
+        final_entry = color.magenta(hash)
+            .. color.cyan(" " .. date)
+            .. color.yellow(message)
+    else
+        final_entry = color.magenta(hash)
+            .. color.cyan(" @" .. author)
+            .. color.yellow(message)
+    end
+    return final_entry
 end
 
 M.make_reflog_entry = function(entry)

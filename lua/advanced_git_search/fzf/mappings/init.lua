@@ -5,6 +5,19 @@ local global_actions = require("advanced_git_search.actions")
 local file_utils = require("advanced_git_search.utils.file")
 local git_utils = require("advanced_git_search.utils.git")
 
+---FZF: <C-w> Toggle date or author in picker entry
+---@return table
+M.toggle_entry_value = function()
+    return {
+        ["ctrl-w"] = {
+            fn = function(_, _)
+                require("advanced_git_search.fzf.pickers.utils").toggle_show_date_instead_of_author()
+            end,
+            reload = true,
+        },
+    }
+end
+
 ---FZF: <C-o> Opens the selected commit in browser
 ---@return table
 M.open_commit_in_brower = function()
