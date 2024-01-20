@@ -142,6 +142,23 @@ end
 
 M.file_name_on_commit = file_name_on_commit
 
+--- Returns true if hash is a commit
+--- @param commit_hash string
+--- @return boolean is_commit true if hash is commit
+local is_commit = function(commit_hash)
+    local command = "cd "
+        .. file.git_dir()
+        .. " && git cat-file -t "
+        .. commit_hash
+
+    local output = command_util.execute(command)
+
+    output = string.gsub(output, "\n", "")
+    return output == "commit"
+end
+
+M.is_commit = is_commit
+
 --- returns the base branch of a branch (where fork_point is)
 M.base_branch = function()
     local command = [[git show-branch |\

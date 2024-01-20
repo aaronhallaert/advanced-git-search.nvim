@@ -4,12 +4,18 @@ local cmd_utils = require("advanced_git_search.commands.utils")
 
 local M = {}
 
+local empty_tree_commit = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
 --- Shows a diff of 2 commit hashes containing changes to the current file
 ---@param first_commit string
 ---@param second_commit string
 ---@param bufnr number
 M.git_diff_file = function(first_commit, second_commit, bufnr)
     local filename_on_head = file.git_relative_path(bufnr)
+
+    if not git_utils.is_commit(first_commit) then
+        first_commit = empty_tree_commit
+    end
 
     local curr_name =
         git_utils.file_name_on_commit(second_commit, filename_on_head)
@@ -58,6 +64,10 @@ end
 --- @param second_commit string
 --- @param prompt string
 M.git_diff_content = function(first_commit, second_commit, prompt)
+    if not git_utils.is_commit(first_commit) then
+        first_commit = empty_tree_commit
+    end
+
     local command = cmd_utils.format_git_diff_command({
         "git",
         "diff",
