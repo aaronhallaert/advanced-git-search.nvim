@@ -32,6 +32,48 @@ M.git_diff_flags = function()
     return git_diff_flags
 end
 
+local function get_keymaps()
+    local keymaps = {
+        toggle_date_author = "<C-w>",
+        open_commit_in_browser = "<C-o>",
+        copy_commit_hash = "<C-y>",
+    }
+    keymaps = vim.tbl_extend("force", keymaps, config["keymaps"] or {})
+
+    if type(keymaps) ~= "table" then
+        vim.notify(
+            "keymaps config must be a table",
+            vim.log.levels.ERROR,
+            { title = "Advanced Git Search" }
+        )
+        return nil
+    end
+
+    return keymaps
+end
+
+M.get_keymap = function(entry)
+    if get_keymaps()[entry] == nil then
+        vim.notify(
+            "No keymap defined for " .. entry,
+            vim.log.levels.ERROR,
+            { title = "Advanced Git Search" }
+        )
+        return ""
+    end
+
+    if type(get_keymaps()[entry]) ~= "string" then
+        vim.notify(
+            "Keymap for " .. entry .. " must be a string",
+            vim.log.levels.ERROR,
+            { title = "Advanced Git Search" }
+        )
+        return ""
+    end
+
+    return get_keymaps()[entry]
+end
+
 M.entry_default_author_or_date = function()
     return config["entry_default_author_or_date"] or "author"
 end
