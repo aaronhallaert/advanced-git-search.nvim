@@ -5,6 +5,7 @@ local global_actions = require("advanced_git_search.actions")
 
 local file_utils = require("advanced_git_search.utils.file")
 local git_utils = require("advanced_git_search.utils.git")
+local config = require("advanced_git_search.utils.config")
 
 -- Map a key to both insert and normal modes
 local function omnimap(map_func, key, handler)
@@ -24,7 +25,7 @@ local toggle_date_author = function(prompt_bufnr)
 end
 
 M.toggle_entry_value = function(map)
-    omnimap(map, "<C-w>", toggle_date_author)
+    omnimap(map, config.get_keymap("toggle_date_author"), toggle_date_author)
 end
 
 -------------------------------------------------------------------------------
@@ -38,7 +39,11 @@ end
 
 --- Open browser at commmit (from entry) with <C-o>
 M.open_selected_commit_in_browser = function(map)
-    omnimap(map, "<C-o>", open_commit_in_browser)
+    omnimap(
+        map,
+        config.get_keymap("open_commit_in_browser"),
+        open_commit_in_browser
+    )
 end
 
 -------------------------------------------------------------------------------
@@ -97,7 +102,7 @@ end
 
 --- copy commit hash to clipboard with <C-y>
 M.copy_commit_hash_to_clipboard = function(map)
-    omnimap(map, "<C-y>", copy_commit_hash)
+    omnimap(map, config.get_keymap("copy_commit_hash"), copy_commit_hash)
 end
 
 -------------------------------------------------------------------------------
