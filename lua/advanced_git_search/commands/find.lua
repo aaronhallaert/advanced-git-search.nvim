@@ -117,6 +117,30 @@ M.git_log_location = function(prompt, author, bufnr, start_line, end_line)
     return vim.tbl_flatten(command)
 end
 
+---@param bufnr number
+---@param start_line number
+---@param end_line number
+---@return table
+M.git_blame_location = function(bufnr, start_line, end_line)
+    local filename = file.relative_path(bufnr)
+    local location = string.format("-L%d,%d", start_line, end_line)
+    local command = {
+        "git",
+        "--no-pager",
+        "blame",
+        "-w", --ignore whitespace
+        "-C",
+        "-C",
+        "-C", -- 3 times: copy from other file in any commit
+        location,
+        "-M",
+        filename,
+        "--date=short",
+    }
+
+    return vim.tbl_flatten(command)
+end
+
 M.changed_on_branch = function()
     return vim.tbl_flatten({
         "git",

@@ -91,6 +91,71 @@ M.git_log_entry_maker = function(entry)
     }
 end
 
+M.git_branch_entry_maker = function(entry)
+    return {
+        value = entry,
+        display = entry:sub(1, 2),
+        ordinal = entry,
+    }
+end
+
+M.git_blame_entry_maker = function(entry)
+    -- 066219cf lua/advanced_git_search/finders/utils.lua (Aaron Hallaert 2023-04-07 94) M.set_last_prompt = function(prompt)
+    -- hash filename (author date line) line_content
+
+    --extract the properties above
+    local hash = entry:sub(1, 8)
+    -- extract filename which is the second word
+    local filename = entry:match("%s(.-)%s%(") or "No file found"
+    -- extract author which is after the first bracket and before the date
+    local author = entry:match("%((.-) %d%d%d%d%-%d%d%-%d%d")
+    local date = entry:match("%d%d%d%d%-%d%d%-%d%d")
+    local line = entry:match("%d+%)")
+    local line_content = entry:match("%) (.*)")
+
+    vim.print(entry)
+
+    local displayer = entry_display.create({
+        separator = " ",
+        items = {
+            { width = 8 },
+            {},
+            {},
+            { remaining = true },
+        },
+    })
+
+    local make_display = function(display_entry)
+        return displayer({
+            {
+                display_entry.opts.commit_hash,
+                "TelescopeResultsIdentifier",
+            },
+            { display_entry.opts.filename, "TelescopeResultsComment" },
+            { display_entry.opts.author, "TelescopeResultsVariable" },
+            { display_entry.opts.line_content, "TelescopeResultsConstant" },
+        })
+    end
+
+    return {
+        value = entry,
+        -- display = entry:sub(1, 8),
+        -- display = date .. " by " .. author .. " --" .. line_content,
+        display = make_display,
+        ordinal = line,
+        filename = filename,
+        preview_title = hash .. " -- " .. author,
+        opts = {
+            commit_hash = hash,
+            date = date,
+            author = author,
+            filename = filename,
+            line_content = line_content,
+            prompt = last_prompt,
+        },
+    }
+end
+
 M.set_last_prompt = function(prompt)
     last_prompt = prompt
 end

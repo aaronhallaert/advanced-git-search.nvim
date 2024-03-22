@@ -18,6 +18,10 @@ local custom_git_functions = function(finder_plugin)
             func = pickers_table.search_log_content,
         },
         {
+            value = "Advanced blame",
+            func = pickers_table.advanced_blame,
+        },
+        {
             value = "Search in file log content",
             func = pickers_table.search_log_content_file,
         },

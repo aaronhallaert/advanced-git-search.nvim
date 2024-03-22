@@ -108,6 +108,50 @@ M.diff_commit_line = function()
         :find()
 end
 
+M.advanced_blame = function()
+    local bufnr = vim.fn.bufnr()
+    local s_start = vim.fn.getpos("'<")[2]
+    local s_end = vim.fn.getpos("'>")[2]
+
+    local themes = require("telescope.themes")
+    local theme_opts = themes["get_dropdown"]({
+        layout_config = { width = 0.8, height = 0.8 },
+    })
+
+    if s_start == 0 or s_end == 0 then
+        vim.notify(
+            "No visual selection",
+            vim.log.levels.WARN,
+            { title = "Advanced Git Search" }
+        )
+        return
+    end
+
+    -- git log -L741,751:'app/models/patients/patient.rb'\
+    -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
+    pickers
+        .new(vim.tbl_extend("force", {
+            results_title = "Advanced blame",
+            finder = telescope_ags_finders.git_blame_location_finder(
+                bufnr,
+                s_start,
+                s_end
+            ),
+            sorter = sorters.highlighter_only(),
+            attach_mappings = function(_, map)
+                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                    map
+                )
+                telescope_ags_mappings.open_selected_commit_in_browser(map)
+                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                telescope_ags_mappings.show_entire_commit(map)
+                telescope_ags_mappings.toggle_entry_value(map)
+                return true
+            end,
+        }, theme_opts))
+        :find()
+end
+
 --- Opens a Telescope window with a list of previous commits.
 --- Query is used to filter the results based on the
 --- content of the commit (added or removed text).

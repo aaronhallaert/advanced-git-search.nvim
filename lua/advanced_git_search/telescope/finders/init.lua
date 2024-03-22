@@ -8,7 +8,9 @@ local utils = require("advanced_git_search.utils")
 local M = {}
 
 M.git_branches_finder = function()
-    return finders.new_oneshot_job(finder_commands.git_branches())
+    return finders.new_oneshot_job(finder_commands.git_branches(), {
+        entry_maker = telescope_finder_utils.git_branch_entry_maker,
+    })
 end
 
 --- Returns all commits that changed the visual selection in the buffer
@@ -26,6 +28,13 @@ M.git_log_location_finder = function(bufnr, start_line, end_line)
             end_line
         )
     end, telescope_finder_utils.git_log_entry_maker)
+end
+
+M.git_blame_location_finder = function(bufnr, start_line, end_line)
+    return finders.new_oneshot_job(
+        finder_commands.git_blame_location(bufnr, start_line, end_line),
+        { entry_maker = telescope_finder_utils.git_blame_entry_maker }
+    )
 end
 
 --- Returns all commits that contains the prompt string in the commit content
