@@ -187,7 +187,7 @@ Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
 ### Telescope
 
 <details>
-<summary>Lazy</summary>
+<summary>Telescope</summary>
 To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
@@ -244,7 +244,7 @@ use({
 ### Fzf-lua
 
 <details>
-<summary>Lazy</summary>
+<summary>Fzf-lua</summary>
 To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
