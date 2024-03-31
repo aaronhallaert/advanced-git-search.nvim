@@ -193,6 +193,7 @@ To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies
 ```lua
 {
     "aaronhallaert/advanced-git-search.nvim",
+    cmd = { "AdvancedGitSearch" },
     config = function()
         -- optional: setup telescope before loading the extension
         require("telescope").setup{
@@ -250,6 +251,7 @@ To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies
 ```lua
 {
     "aaronhallaert/advanced-git-search.nvim",
+    cmd = { "AdvancedGitSearch" },
     config = function()
         require("advanced_git_search.fzf").setup{
             -- Insert Config here
