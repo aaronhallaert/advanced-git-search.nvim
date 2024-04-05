@@ -41,7 +41,10 @@ M.search_log_content_file = function()
         exec_empty_query = true,
         func_async_callback = false,
         fzf_opts = {
-            ["--preview"] = fzf_previewers.git_diff_content_previewer(),
+            ["--preview"] = fzf_previewers.git_diff_content_previewer(
+                { bufnr = vim.fn.bufnr() }
+                -- vim.fn.bufnr()
+            ),
         },
         fn_transform = function(x)
             return fzf_picker_utils.make_entry(x)

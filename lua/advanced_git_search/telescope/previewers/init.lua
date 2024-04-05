@@ -23,7 +23,11 @@ M.git_diff_commit_file_previewer = function(bufnr)
 end
 
 --- Shows a diff of the commit in the finder entry, filtered on the prompt string for the commit content
-M.git_diff_content_previewer = function()
+---@param opts table|nil
+---@return table
+M.git_diff_content_previewer = function(opts)
+    opts = opts or {}
+
     return previewers.new_termopen_previewer({
         title = "Changes including prompt string",
         get_command = function(entry)
@@ -33,7 +37,8 @@ M.git_diff_content_previewer = function()
             return preview_commands.git_diff_content(
                 prev_commit,
                 commit_hash,
-                prompt
+                prompt,
+                { bufnr = opts.bufnr }
             )
         end,
     })

@@ -6,41 +6,58 @@ local M = {}
 
 local empty_tree_commit = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
+---@param bufnr number|nil
+---@param first_commit string
+---@param second_commit string
+---@return string|nil, string|nil
+local function filename_commit(bufnr, first_commit, second_commit)
+    if bufnr == nil then
+        return nil, nil
+    end
+
+    local filename_on_head = file.git_relative_path(bufnr)
+
+    local curr_name =
+        git_utils.file_name_on_commit(second_commit, filename_on_head)
+
+    local prev_name =
+        git_utils.file_name_on_commit(first_commit, filename_on_head)
+
+    return prev_name, curr_name
+end
+
 --- Shows a diff of 2 commit hashes containing changes to the current file
 ---@param first_commit string
 ---@param second_commit string
 ---@param bufnr number
 M.git_diff_file = function(first_commit, second_commit, bufnr)
-    local filename_on_head = file.git_relative_path(bufnr)
-
     if not git_utils.is_commit(first_commit) then
         first_commit = empty_tree_commit
     end
 
-    local curr_name =
-        git_utils.file_name_on_commit(second_commit, filename_on_head)
-    local prev_name =
-        git_utils.file_name_on_commit(first_commit, filename_on_head)
+    local prev_name, curr_name =
+        filename_commit(bufnr, first_commit, second_commit)
+
+    local base_cmd = {
+        "git",
+        "diff",
+        "--color=always",
+    }
 
     if prev_name ~= nil and curr_name ~= nil then
-        return cmd_utils.format_git_diff_command({
-            "git",
-            "diff",
-            "--color=always",
-            first_commit .. ":" .. prev_name,
-            second_commit .. ":" .. curr_name,
-        })
+        table.insert(base_cmd, first_commit .. ":" .. prev_name)
+        table.insert(base_cmd, second_commit .. ":" .. curr_name)
     elseif prev_name == nil and curr_name ~= nil then
-        return cmd_utils.format_git_diff_command({
-            "git",
-            "diff",
-            "--color=always",
-            first_commit,
-            second_commit,
-            "--",
-            file.git_relative_path_to_relative_path(curr_name),
-        })
+        table.insert(base_cmd, first_commit)
+        table.insert(base_cmd, second_commit)
+        table.insert(base_cmd, "--")
+        table.insert(
+            base_cmd,
+            file.git_relative_path_to_relative_path(curr_name)
+        )
     end
+
+    return cmd_utils.format_git_diff_command(base_cmd)
 end
 
 --- Shows a diff of the passed file with a calculated base branch
@@ -63,18 +80,40 @@ end
 --- @param first_commit string
 --- @param second_commit string
 --- @param prompt string
-M.git_diff_content = function(first_commit, second_commit, prompt)
+--- @param opts table|nil
+M.git_diff_content = function(first_commit, second_commit, prompt, opts)
+    opts = opts or {}
+
+    local prev_name, curr_name =
+        filename_commit(opts.bufnr, first_commit, second_commit)
+
     if not git_utils.is_commit(first_commit) then
         first_commit = empty_tree_commit
     end
 
-    local command = cmd_utils.format_git_diff_command({
+    local base_cmd = {
         "git",
         "diff",
         "--color=always",
-        first_commit,
-        second_commit,
-    })
+    }
+
+    if prev_name == nil and curr_name == nil then
+        table.insert(base_cmd, first_commit)
+        table.insert(base_cmd, second_commit)
+    elseif prev_name ~= nil and curr_name ~= nil then
+        table.insert(base_cmd, first_commit .. ":" .. prev_name)
+        table.insert(base_cmd, second_commit .. ":" .. curr_name)
+    elseif prev_name == nil and curr_name ~= nil then
+        table.insert(base_cmd, first_commit)
+        table.insert(base_cmd, second_commit)
+        table.insert(base_cmd, "--")
+        table.insert(
+            base_cmd,
+            file.git_relative_path_to_relative_path(curr_name)
+        )
+    end
+
+    local command = cmd_utils.format_git_diff_command(base_cmd)
 
     if prompt and prompt ~= "" and prompt ~= '""' then
         table.insert(command, "-G")
