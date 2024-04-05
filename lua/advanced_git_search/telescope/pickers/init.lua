@@ -90,9 +90,9 @@ M.diff_commit_line = function()
                 s_start,
                 s_end
             ),
-            previewer = telescope_ags_previewers.git_diff_commit_file_previewer(
-                bufnr
-            ),
+            previewer = telescope_ags_previewers.git_diff_commit_file_previewer({
+                bufnr = bufnr,
+            }),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 telescope_ags_mappings.open_diff_view_current_file_selected_commit(
@@ -179,9 +179,9 @@ M.diff_commit_file = function()
             results_title = "Commits that affected this file (renamed files included)",
             prompt_title = "Commit message",
             finder = telescope_ags_finders.git_log_file_finder(bufnr),
-            previewer = telescope_ags_previewers.git_diff_commit_file_previewer(
-                bufnr
-            ),
+            previewer = telescope_ags_previewers.git_diff_commit_file_previewer({
+                bufnr = bufnr,
+            }),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 telescope_ags_mappings.open_diff_view_current_file_selected_commit(

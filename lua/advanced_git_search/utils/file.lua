@@ -51,6 +51,7 @@ M.git_relative_path = function(bufnr)
     end
 end
 
+-- @return string
 M.git_relative_path_to_relative_path = function(git_relative_path)
     local git_dir = M.find_first_ancestor_dir_or_file(vim.fn.getcwd(), ".git")
     local project_dir = vim.fn.getcwd()

@@ -10,7 +10,10 @@ local empty_tree_commit = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 ---@param first_commit string
 ---@param second_commit string
 ---@param bufnr number
-M.git_diff_file = function(first_commit, second_commit, bufnr)
+M.git_diff_file = function(first_commit, second_commit, bufnr, opts)
+    opts = opts or {}
+    vim.tbl_extend("force", opts, { color = true })
+
     local filename_on_head = file.git_relative_path(bufnr)
 
     if not git_utils.is_commit(first_commit) then
@@ -22,24 +25,27 @@ M.git_diff_file = function(first_commit, second_commit, bufnr)
     local prev_name =
         git_utils.file_name_on_commit(first_commit, filename_on_head)
 
+    local git_diff_cmd = { "git", "diff" }
+
+    if opts.color then
+        table.insert(git_diff_cmd, "--color=always")
+    end
+
     if prev_name ~= nil and curr_name ~= nil then
-        return cmd_utils.format_git_diff_command({
-            "git",
-            "diff",
-            "--color=always",
-            first_commit .. ":" .. prev_name,
-            second_commit .. ":" .. curr_name,
-        })
+        table.insert(git_diff_cmd, first_commit .. ":" .. prev_name)
+        table.insert(git_diff_cmd, second_commit .. ":" .. curr_name)
+
+        return cmd_utils.format_git_diff_command(git_diff_cmd)
     elseif prev_name == nil and curr_name ~= nil then
-        return cmd_utils.format_git_diff_command({
-            "git",
-            "diff",
-            "--color=always",
-            first_commit,
-            second_commit,
-            "--",
-            file.git_relative_path_to_relative_path(curr_name),
-        })
+        table.insert(git_diff_cmd, first_commit)
+        table.insert(git_diff_cmd, second_commit)
+        table.insert(git_diff_cmd, "--")
+        table.insert(
+            git_diff_cmd,
+            file.git_relative_path_to_relative_path(curr_name)
+        )
+
+        return cmd_utils.format_git_diff_command(git_diff_cmd)
     end
 end
 
@@ -71,7 +77,7 @@ M.git_diff_content = function(first_commit, second_commit, prompt)
     local command = cmd_utils.format_git_diff_command({
         "git",
         "diff",
-        "--color=always",
+        -- "--color=always",
         first_commit,
         second_commit,
     })
