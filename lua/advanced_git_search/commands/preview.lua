@@ -9,7 +9,7 @@ local empty_tree_commit = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 ---@param bufnr number|nil
 ---@param first_commit string
 ---@param second_commit string
----@return string|nil, string|nil
+---@return string|nil prev_name, string|nil curr_name
 local function filename_commit(bufnr, first_commit, second_commit)
     if bufnr == nil then
         return nil, nil

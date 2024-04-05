@@ -5,7 +5,7 @@ local command_util = require("advanced_git_search.utils.command")
 local M = {}
 
 local all_commit_hashes = function()
-    local command = "git rev-list --all"
+    local command = "git rev-list HEAD"
     local output = command_util.execute(command)
 
     return utils.split_string(output, "\n")
@@ -14,7 +14,7 @@ end
 local all_commit_hashes_touching_file = function(git_relative_file_path)
     local command = "cd "
         .. file.git_dir()
-        .. " && git log --all --follow --pretty=format:'%H' -- "
+        .. " && git log --follow --pretty=format:'%H' -- "
         .. git_relative_file_path
 
     local output = command_util.execute(command)
@@ -38,7 +38,7 @@ end
 -- local is_file_renamed = function(git_relative_file_path)
 --     local command = "cd "
 --         .. file.git_dir()
---         .. " && git log --all --follow --diff-filter=R --pretty=format:'%H' -- "
+--         .. " && git log --follow --diff-filter=R --pretty=format:'%H' -- "
 --         .. git_relative_file_path
 --
 --     local output = command_util.execute(command)
@@ -74,7 +74,7 @@ local file_name_on_commit = function(commit_hash, git_relative_file_path)
     -- FIXME: this is a very naive implementation, but it always returns the
     -- correct filename for each commit (even if the commit didn't touch the file)
 
-    -- first find index in all_commit_hashes
+    -- first find index of the passed commit_hash in all_commit_hashes
     local all_hashes = all_commit_hashes()
     if all_hashes == nil then
         return nil
@@ -111,7 +111,6 @@ local file_name_on_commit = function(commit_hash, git_relative_file_path)
             end
         end
 
-        -- print("searching next")
         if last_touched_hash ~= nil then
             break
         end
@@ -124,7 +123,7 @@ local file_name_on_commit = function(commit_hash, git_relative_file_path)
     local command = "cd "
         .. file.git_dir()
         .. " && "
-        .. "git --no-pager log -M --follow --pretty=format:'%H' --name-only "
+        .. "git --no-pager log --follow --pretty=format:'%H' --name-only "
         .. last_touched_hash
         .. "~.. -- "
         .. git_relative_file_path
