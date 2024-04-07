@@ -8,7 +8,7 @@ local git_utils = require("advanced_git_search.utils.git")
 local M = {}
 
 M.git_diff_content_previewer = function()
-    return fzf_lua.shell.preview_action_cmd(function(items)
+    return fzf_lua.shell.raw_preview_action_cmd(function(items)
         local selection = items[1]
         local hash = string.sub(selection, 1, 7)
 
@@ -39,7 +39,7 @@ M.git_diff_content_previewer = function()
 end
 
 M.git_diff_file_previewer = function(bufnr)
-    return fzf_lua.shell.preview_action_cmd(function(items)
+    return fzf_lua.shell.raw_preview_action_cmd(function(items)
         local selection = items[1]
         local commit_hash = string.sub(selection, 1, 7)
         local prev_commit = git_utils.previous_commit_hash(commit_hash)
@@ -52,7 +52,7 @@ M.git_diff_file_previewer = function(bufnr)
 end
 
 M.git_diff_branch_file_previewer = function(bufnr)
-    return fzf_lua.shell.preview_action_cmd(function(items)
+    return fzf_lua.shell.raw_preview_action_cmd(function(items)
         local branch = items[1]
 
         return table.concat(
@@ -63,7 +63,7 @@ M.git_diff_branch_file_previewer = function(bufnr)
 end
 
 M.git_diff_base_branch = function()
-    return fzf_lua.shell.preview_action_cmd(function(items)
+    return fzf_lua.shell.raw_preview_action_cmd(function(items)
         local filename = items[1]
 
         return table.concat(
