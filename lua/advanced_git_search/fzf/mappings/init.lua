@@ -4,12 +4,13 @@ local utils = require("advanced_git_search.utils")
 local global_actions = require("advanced_git_search.actions")
 local file_utils = require("advanced_git_search.utils.file")
 local git_utils = require("advanced_git_search.utils.git")
+local config = require("advanced_git_search.utils.config")
 
 ---FZF: <C-w> Toggle date or author in picker entry
 ---@return table
 M.toggle_entry_value = function()
     return {
-        ["ctrl-w"] = {
+        [config.get_keymap("toggle_date_author") or "ctrl-w"] = {
             fn = function(_, _)
                 require("advanced_git_search.fzf.pickers.utils").toggle_show_date_instead_of_author()
             end,
@@ -22,7 +23,10 @@ end
 ---@return table
 M.open_commit_in_brower = function()
     return {
-        ["ctrl-o"] = function(selected, _)
+        [config.get_keymap("open_commit_in_browser") or "ctrl-o"] = function(
+            selected,
+            _
+        )
             local selection = selected[1]
             local hash = utils.split_string(selection, " ")[1]
 
@@ -52,7 +56,10 @@ end
 ---@return table
 M.show_entire_commit = function()
     return {
-        ["ctrl-e"] = function(selected, _)
+        [config.get_keymap("show_entire_commit") or "ctrl-e"] = function(
+            selected,
+            _
+        )
             local selection = selected[1]
             local commit_hash = utils.split_string(selection, " ")[1]
 
@@ -84,7 +91,10 @@ end
 ---@return table
 M.copy_commit_hash = function()
     return {
-        ["ctrl-y"] = function(selected, _)
+        [config.get_keymap("copy_commit_hash") or "ctrl-y"] = function(
+            selected,
+            _
+        )
             local selection = selected[1]
             local commit_hash = utils.split_string(selection, " ")[1]
 
