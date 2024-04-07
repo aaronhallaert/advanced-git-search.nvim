@@ -5,6 +5,7 @@ local config = {}
 M.setup = function(ext_config)
     ext_config = ext_config or {}
 
+    ext_config.browse_command = ext_config.browse_command or "GBrowse"
     ext_config.diff_plugin = ext_config.diff_plugin or "fugitive"
     ext_config.git_diff_flags = ext_config.git_diff_flags or {}
     ext_config.show_builtin_git_pickers = ext_config.show_builtin_git_pickers
@@ -162,6 +163,10 @@ end
 
 M.show_builtin_git_pickers = function()
     return config["show_builtin_git_pickers"]
+end
+
+M.get_browse_command = function()
+    return config["browse_command"]
 end
 
 return M

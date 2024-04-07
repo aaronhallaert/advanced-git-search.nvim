@@ -135,6 +135,8 @@ Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
 
 ```lua
 {
+    -- Browse command to open commits in browser. Default fugitive GBrowse.
+    browse_command = "GBrowse",
     -- fugitive or diffview
     diff_plugin = "fugitive",
     -- customize git in previewer
