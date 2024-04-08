@@ -89,7 +89,7 @@ end
 
 --- open entire commit diff with <C-e>
 M.show_entire_commit = function(map)
-    omnimap(map, "<C-e>", open_entire_commit)
+    omnimap(map, config.get_keymap("show_entire_commit"), open_entire_commit)
 end
 
 -------------------------------------------------------------------------------

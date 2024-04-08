@@ -151,6 +151,7 @@ Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
         toggle_date_author = "<C-w>",
         open_commit_in_browser = "<C-o>",
         copy_commit_hash = "<C-y>",
+        show_entire_commit = "<C-e>",
     }
 
     -- Telescope layout setup
