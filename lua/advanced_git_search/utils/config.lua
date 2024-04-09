@@ -53,7 +53,12 @@ local function get_keymaps()
     return keymaps
 end
 
-M.get_keymap = function(entry)
+---@param entry
+---@param format string|nil "C", "ctrl" (default: "C")
+---@return string "<C-key>" or "ctrl-key"
+M.get_keymap = function(entry, format)
+    format = format or "C"
+
     if get_keymaps()[entry] == nil then
         vim.notify(
             "No keymap defined for " .. entry,
@@ -70,6 +75,12 @@ M.get_keymap = function(entry)
             { title = "Advanced Git Search" }
         )
         return ""
+    end
+
+    if format == "ctrl" then
+        local keymap = get_keymaps()[entry]
+        keymap, _ = string.gsub(keymap, "%<C%-(.)%>", "ctrl-%1")
+        return keymap
     end
 
     return get_keymaps()[entry]

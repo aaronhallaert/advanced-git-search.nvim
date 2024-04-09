@@ -10,7 +10,7 @@ local config = require("advanced_git_search.utils.config")
 ---@return table
 M.toggle_entry_value = function()
     return {
-        [config.get_keymap("toggle_date_author") or "ctrl-w"] = {
+        [config.get_keymap("toggle_date_author", "ctrl") or "ctrl-w"] = {
             fn = function(_, _)
                 require("advanced_git_search.fzf.pickers.utils").toggle_show_date_instead_of_author()
             end,
@@ -23,7 +23,7 @@ end
 ---@return table
 M.open_commit_in_brower = function()
     return {
-        [config.get_keymap("open_commit_in_browser") or "ctrl-o"] = function(
+        [config.get_keymap("open_commit_in_browser", "ctrl") or "ctrl-o"] = function(
             selected,
             _
         )
@@ -56,7 +56,7 @@ end
 ---@return table
 M.show_entire_commit = function()
     return {
-        [config.get_keymap("show_entire_commit") or "ctrl-e"] = function(
+        [config.get_keymap("show_entire_commit", "ctrl") or "ctrl-e"] = function(
             selected,
             _
         )
@@ -91,7 +91,7 @@ end
 ---@return table
 M.copy_commit_hash = function()
     return {
-        [config.get_keymap("copy_commit_hash") or "ctrl-y"] = function(
+        [config.get_keymap("copy_commit_hash", "ctrl") or "ctrl-y"] = function(
             selected,
             _
         )
