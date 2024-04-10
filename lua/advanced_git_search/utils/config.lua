@@ -78,8 +78,9 @@ M.get_keymap = function(entry, format)
     end
 
     if format == "ctrl" then
-        local keymap = get_keymaps()[entry]
-        keymap, _ = string.gsub(keymap, "%<C%-(.)%>", "ctrl-%1")
+        local configured_keymap = get_keymaps()[entry]
+        local keymap, _ =
+            string.gsub(configured_keymap, "%<C%-(.)%>", "ctrl-%1")
         return keymap
     end
 
