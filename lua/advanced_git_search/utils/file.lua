@@ -57,7 +57,8 @@ M.git_relative_path_to_relative_path = function(git_relative_path)
 
     local absolute_path = git_dir .. "/" .. git_relative_path
     project_dir = utils.escape_chars(project_dir .. "/")
-    return string.gsub(absolute_path, project_dir, "")
+    local subbed, _ = string.gsub(absolute_path, project_dir, "")
+    return subbed
 end
 
 M.path = (function()

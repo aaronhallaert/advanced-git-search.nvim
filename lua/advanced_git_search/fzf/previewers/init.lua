@@ -7,7 +7,10 @@ local git_utils = require("advanced_git_search.utils.git")
 
 local M = {}
 
-M.git_diff_content_previewer = function()
+--- @param opts table|nil
+M.git_diff_content_previewer = function(opts)
+    opts = opts or { bufnr = nil }
+
     return fzf_lua.shell.raw_preview_action_cmd(function(items)
         local selection = items[1]
         local hash = string.sub(selection, 1, 7)
@@ -21,7 +24,8 @@ M.git_diff_content_previewer = function()
             preview_commands.git_diff_content(
                 prev_commit,
                 hash,
-                string.format('"%s"', utils.escape_term(prompt))
+                string.format('"%s"', utils.escape_term(prompt)),
+                { bufnr = opts.bufnr }
             ),
             " "
         )
