@@ -9,7 +9,10 @@ M.relative_path = function(bufnr)
 end
 
 M.git_dir = function()
-    return M.find_first_ancestor_dir_or_file(vim.fn.getcwd(), ".git")
+    return M.find_first_ancestor_dir_or_file(
+        M.path.sanitize(vim.fn.getcwd()),
+        ".git"
+    )
 end
 
 M.file_name = function(bufnr)
@@ -17,7 +20,7 @@ M.file_name = function(bufnr)
 end
 
 M.absolute_path = function(bufnr)
-    return vim.fn.expand("#" .. bufnr .. ":p")
+    return M.path.sanitize(vim.fn.expand("#" .. bufnr .. ":p"))
 end
 
 M.extension = function(bufnr)
@@ -46,14 +49,17 @@ M.git_relative_path = function(bufnr)
         return string.gsub(abs_filename, git_dir, "")
     else
         -- try with current cwd (normally a git repo)
-        git_dir = utils.escape_chars(vim.fn.getcwd() .. "/")
+        git_dir = utils.escape_chars(M.path.sanitize(vim.fn.getcwd()) .. "/")
         return string.gsub(abs_filename, git_dir, "")
     end
 end
 
 M.git_relative_path_to_relative_path = function(git_relative_path)
-    local git_dir = M.find_first_ancestor_dir_or_file(vim.fn.getcwd(), ".git")
-    local project_dir = vim.fn.getcwd()
+    local git_dir = M.find_first_ancestor_dir_or_file(
+        M.path.sanitize(vim.fn.getcwd()),
+        ".git"
+    )
+    local project_dir = M.path.sanitize(vim.fn.getcwd())
 
     local absolute_path = git_dir .. "/" .. git_relative_path
     project_dir = utils.escape_chars(project_dir .. "/")
@@ -205,7 +211,7 @@ function M.search_ancestors(startpath, func)
         end
 
         if func(path) then
-            return path
+            return M.path.sanitize(path)
         end
     end
 end
