@@ -5,7 +5,8 @@ local config = {}
 M.setup = function(ext_config)
     ext_config = ext_config or {}
 
-    ext_config.browse_command = ext_config.browse_command or "GBrowse"
+    ext_config.browse_command = ext_config.browse_command
+        or "GBrowse {commit_hash}"
     ext_config.diff_plugin = ext_config.diff_plugin or "fugitive"
     ext_config.git_diff_flags = ext_config.git_diff_flags or {}
     ext_config.show_builtin_git_pickers = ext_config.show_builtin_git_pickers
@@ -165,8 +166,15 @@ M.show_builtin_git_pickers = function()
     return config["show_builtin_git_pickers"]
 end
 
-M.get_browse_command = function()
-    return config["browse_command"]
+M.get_browse_command = function(commit_hash)
+    local cmd = config["browse_command"]
+    local commit_pattern = "%{commit_hash%}"
+
+    if string.find(config["browse_command"], commit_pattern) == nil then
+        return cmd .. " " .. commit_hash
+    end
+
+    return string.gsub(cmd, commit_pattern, commit_hash)
 end
 
 return M

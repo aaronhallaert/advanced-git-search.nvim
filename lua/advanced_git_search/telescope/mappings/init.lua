@@ -34,7 +34,7 @@ local open_commit_in_browser = function(prompt_bufnr)
     actions.close(prompt_bufnr)
     local selection = action_state.get_selected_entry()
 
-    vim.api.nvim_command(":GBrowse " .. selection.opts.commit_hash)
+    global_actions.open_in_browser(selection.opts.commit_hash)
 end
 
 --- Open browser at commmit (from entry) with <C-o>
