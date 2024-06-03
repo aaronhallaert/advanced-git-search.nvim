@@ -55,7 +55,7 @@ end
 ---General action: Open commit in browser
 ---@param commit_hash string
 M.open_in_browser = function(commit_hash)
-    vim.api.nvim_command(":" .. config.get_browse_command() .. commit_hash)
+    vim.api.nvim_command(":" .. config.get_browse_command(commit_hash))
 end
 
 ---General action: Checkout commit
