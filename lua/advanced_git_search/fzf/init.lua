@@ -2,6 +2,7 @@ local M = {}
 local config = require("advanced_git_search.utils.config")
 local setup = require("advanced_git_search.utils.setup")
 
+---@param opts advanced_git_search.Config
 M.setup = function(opts)
     config.setup(opts)
 

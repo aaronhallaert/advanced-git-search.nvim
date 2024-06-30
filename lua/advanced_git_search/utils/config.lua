@@ -2,6 +2,23 @@ local M = {}
 
 local config = {}
 
+---@class Keymaps
+---@field toggle_date_author? string
+---@field open_commit_in_browser? string
+---@field copy_commit_hash? string
+---@field show_entire_commit? string
+
+---@class advanced_git_search.Config
+---@field browse_command? string
+---@field diff_plugin? "fugitive"|"diffview"
+---@field git_flags? string[]
+---@field git_diff_flags? string[]
+---@field show_builtin_git_pickers? boolean
+---@field entry_default_author_or_date? "author"|"date"
+---@field keymaps? Keymaps
+---@field telescope_theme? table<string, string|table>
+
+---@param ext_config advanced_git_search.Config
 M.setup = function(ext_config)
     ext_config = ext_config or {}
 
