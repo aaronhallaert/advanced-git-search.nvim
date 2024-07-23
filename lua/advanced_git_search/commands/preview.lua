@@ -41,7 +41,6 @@ M.git_diff_file = function(first_commit, second_commit, bufnr)
     local base_cmd = {
         "git",
         "diff",
-        "--color=always",
     }
 
     if prev_name ~= nil and curr_name ~= nil then
@@ -94,7 +93,6 @@ M.git_diff_content = function(first_commit, second_commit, prompt, opts)
     local base_cmd = {
         "git",
         "diff",
-        "--color=always",
     }
 
     if prev_name == nil and curr_name == nil then
@@ -138,7 +136,6 @@ M.git_diff_branch = function(branch, bufnr)
         return cmd_utils.format_git_diff_command({
             "git",
             "diff",
-            "--color=always",
             branch .. ":" .. branch_filename,
             current_hash .. ":" .. file.git_relative_path(bufnr),
         })
