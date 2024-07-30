@@ -22,15 +22,18 @@ M.changed_on_branch = function()
     local theme_opts = config.telescope_theme("changed_on_branch")
 
     pickers
-        .new(vim.tbl_extend("force", {
-            results_title = "Modified "
-                .. git_utils.base_branch()
-                .. " -> "
-                .. git_utils.current_branch(),
-            sorter = sorters.get_fuzzy_file(),
-            finder = telescope_ags_finders.changed_files_on_current_branch_finder(),
-            previewer = telescope_ags_previewers.changed_files_on_current_branch_previewer(),
-        }, theme_opts))
+        .new(
+            vim.tbl_extend("force", {
+                results_title = "Modified "
+                    .. git_utils.base_branch()
+                    .. " -> "
+                    .. git_utils.current_branch(),
+                sorter = sorters.get_fuzzy_file(),
+                finder = telescope_ags_finders.changed_files_on_current_branch_finder(),
+                previewer = telescope_ags_previewers.changed_files_on_current_branch_previewer(),
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 
@@ -43,21 +46,24 @@ M.diff_branch_file = function()
     local theme_opts = config.telescope_theme("diff_branch_file")
 
     pickers
-        .new(vim.tbl_extend("force", {
-            results_title = "Local branches :: *" .. current_branch,
-            prompt_title = "Branch name",
-            finder = telescope_ags_finders.git_branches_finder(),
-            sorter = sorters.get_fuzzy_file(),
-            previewer = telescope_ags_previewers.git_diff_branch_file_previewer(
-                bufnr
-            ),
-            attach_mappings = function(_, map)
-                telescope_ags_mappings.open_diff_view_current_file_selected_branch(
-                    map
-                )
-                return true
-            end,
-        }, theme_opts))
+        .new(
+            vim.tbl_extend("force", {
+                results_title = "Local branches :: *" .. current_branch,
+                prompt_title = "Branch name",
+                finder = telescope_ags_finders.git_branches_finder(),
+                sorter = sorters.get_fuzzy_file(),
+                previewer = telescope_ags_previewers.git_diff_branch_file_previewer(
+                    bufnr
+                ),
+                attach_mappings = function(_, map)
+                    telescope_ags_mappings.open_diff_view_current_file_selected_branch(
+                        map
+                    )
+                    return true
+                end,
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 
@@ -82,29 +88,33 @@ M.diff_commit_line = function()
     -- git log -L741,751:'app/models/patients/patient.rb'\
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
     pickers
-        .new(vim.tbl_extend("force", {
-            results_title = "Commits that affected the selected lines",
-            prompt_title = "Commit message",
-            finder = telescope_ags_finders.git_log_location_finder(
-                bufnr,
-                s_start,
-                s_end
-            ),
-            previewer = telescope_ags_previewers.git_diff_commit_file_previewer(
-                bufnr
-            ),
-            sorter = sorters.highlighter_only(),
-            attach_mappings = function(_, map)
-                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
-                    map
-                )
-                telescope_ags_mappings.open_selected_commit_in_browser(map)
-                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
-                telescope_ags_mappings.show_entire_commit(map)
-                telescope_ags_mappings.toggle_entry_value(map)
-                return true
-            end,
-        }, theme_opts))
+        .new(
+            vim.tbl_extend("force", {
+                results_title = "Commits that affected the selected lines",
+                prompt_title = "Commit message",
+                finder = telescope_ags_finders.git_log_location_finder(
+                    bufnr,
+                    s_start,
+                    s_end
+                ),
+                previewer = telescope_ags_previewers.git_diff_commit_file_previewer({
+                    bufnr = bufnr,
+                    preview_query = vim.fn.getline("."),
+                }),
+                sorter = sorters.highlighter_only(),
+                attach_mappings = function(_, map)
+                    telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                        map
+                    )
+                    telescope_ags_mappings.open_selected_commit_in_browser(map)
+                    telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                    telescope_ags_mappings.show_entire_commit(map)
+                    telescope_ags_mappings.toggle_entry_value(map)
+                    return true
+                end,
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 
@@ -181,9 +191,9 @@ M.diff_commit_file = function()
             results_title = "Commits that affected this file (renamed files included)",
             prompt_title = "Commit message",
             finder = telescope_ags_finders.git_log_file_finder(bufnr),
-            previewer = telescope_ags_previewers.git_diff_commit_file_previewer(
-                bufnr
-            ),
+            previewer = telescope_ags_previewers.git_diff_commit_file_previewer({
+                bufnr = bufnr,
+            }),
             sorter = sorters.highlighter_only(),
             attach_mappings = function(_, map)
                 telescope_ags_mappings.open_diff_view_current_file_selected_commit(

@@ -56,7 +56,7 @@ M.git_log_content = function(prompt, author, bufnr)
         table.insert(command, filename)
     end
 
-    return vim.tbl_flatten(command)
+    return vim.iter(command):flatten():totable()
 end
 
 ---@param prompt string|nil
@@ -84,7 +84,7 @@ M.git_log_file = function(prompt, author, bufnr)
     table.insert(command, "--follow")
     table.insert(command, filename)
 
-    return vim.tbl_flatten(command)
+    return vim.iter(command):flatten():totable()
 end
 
 ---@param prompt string|nil
@@ -114,11 +114,11 @@ M.git_log_location = function(prompt, author, bufnr, start_line, end_line)
         table.insert(command, "--grep=" .. prompt)
     end
 
-    return vim.tbl_flatten(command)
+    return vim.iter(command):flatten():totable()
 end
 
 M.changed_on_branch = function()
-    return vim.tbl_flatten({
+    local command = {
         "git",
         "--no-pager",
         "diff",
@@ -128,7 +128,8 @@ M.changed_on_branch = function()
         "--merge-base",
         git_utils.base_branch(),
         "--relative",
-    })
+    }
+    return vim.iter(command):flatten():totable()
 end
 
 return M
