@@ -65,7 +65,6 @@ M.git_diff_base_branch = function(relative_filename)
     return cmd_utils.format_git_diff_command({
         "git",
         "diff",
-        "--color=always",
         "--diff-filter=ACMR",
         "--cached",
         "--merge-base",
@@ -143,7 +142,6 @@ M.git_diff_branch = function(branch, bufnr)
         return cmd_utils.format_git_diff_command({
             "git",
             "diff",
-            "--color=always",
             branch,
             current_hash,
             "--",
