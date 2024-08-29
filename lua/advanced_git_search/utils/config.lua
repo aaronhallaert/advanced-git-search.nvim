@@ -55,7 +55,7 @@ local function get_keymaps()
     return keymaps
 end
 
----@param entry
+---@param entry string
 ---@param format string|nil "C", "ctrl" (default: "C")
 ---@return string "<C-key>" or "ctrl-key"
 M.get_keymap = function(entry, format)

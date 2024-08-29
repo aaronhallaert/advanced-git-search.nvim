@@ -127,22 +127,25 @@ M.search_log_content = function()
     -- git log -L741,751:'app/models/patients/patient.rb' \
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
     pickers
-        .new(vim.tbl_extend("force", {
-            results_title = "Commits",
-            prompt_title = "Git log content (added, removed or updated text)",
-            finder = telescope_ags_finders.git_log_content_finder({}),
-            previewer = telescope_ags_previewers.git_diff_content_previewer(),
-            attach_mappings = function(_, map)
-                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
-                    map
-                )
-                telescope_ags_mappings.open_selected_commit_in_browser(map)
-                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
-                telescope_ags_mappings.show_entire_commit(map)
-                telescope_ags_mappings.toggle_entry_value(map)
-                return true
-            end,
-        }, theme_opts))
+        .new(
+            vim.tbl_extend("force", {
+                results_title = "Commits",
+                prompt_title = "Git log content (added, removed or updated text)",
+                finder = telescope_ags_finders.git_log_content_finder({}),
+                previewer = telescope_ags_previewers.git_diff_content_previewer(),
+                attach_mappings = function(_, map)
+                    telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                        map
+                    )
+                    telescope_ags_mappings.open_selected_commit_in_browser(map)
+                    telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                    telescope_ags_mappings.show_entire_commit(map)
+                    telescope_ags_mappings.toggle_entry_value(map)
+                    return true
+                end,
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 
@@ -156,27 +159,30 @@ M.search_log_content_file = function()
     -- git log -L741,751:'app/models/patients/patient.rb' \
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
     pickers
-        .new(vim.tbl_extend("force", {
-            results_title = "Commits",
-            prompt_title = "Git log content (added, removed or updated text in this file)",
-            finder = telescope_ags_finders.git_log_content_finder({
-                bufnr = vim.fn.bufnr(),
-            }),
-            previewer = telescope_ags_previewers.git_diff_content_previewer({
-                bufnr = vim.fn.bufnr(),
-            }),
-            attach_mappings = function(_, map)
-                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
-                    map
-                )
-                telescope_ags_mappings.open_selected_commit_in_browser(map)
-                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
-                telescope_ags_mappings.show_entire_commit(map)
-                telescope_ags_mappings.toggle_entry_value(map)
+        .new(
+            vim.tbl_extend("force", {
+                results_title = "Commits",
+                prompt_title = "Git log content (added, removed or updated text in this file)",
+                finder = telescope_ags_finders.git_log_content_finder({
+                    bufnr = vim.fn.bufnr(),
+                }),
+                previewer = telescope_ags_previewers.git_diff_content_previewer({
+                    bufnr = vim.fn.bufnr(),
+                }),
+                attach_mappings = function(_, map)
+                    telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                        map
+                    )
+                    telescope_ags_mappings.open_selected_commit_in_browser(map)
+                    telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                    telescope_ags_mappings.show_entire_commit(map)
+                    telescope_ags_mappings.toggle_entry_value(map)
 
-                return true
-            end,
-        }, theme_opts))
+                    return true
+                end,
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 
@@ -187,26 +193,29 @@ M.diff_commit_file = function()
     local theme_opts = config.telescope_theme("diff_commit_file")
 
     pickers
-        .new(vim.tbl_extend("force", {
-            results_title = "Commits that affected this file (renamed files included)",
-            prompt_title = "Commit message",
-            finder = telescope_ags_finders.git_log_file_finder(bufnr),
-            previewer = telescope_ags_previewers.git_diff_commit_file_previewer({
-                bufnr = bufnr,
-            }),
-            sorter = sorters.highlighter_only(),
-            attach_mappings = function(_, map)
-                telescope_ags_mappings.open_diff_view_current_file_selected_commit(
-                    map
-                )
-                telescope_ags_mappings.show_entire_commit(map)
-                telescope_ags_mappings.toggle_entry_value(map)
-                telescope_ags_mappings.open_selected_commit_in_browser(map)
-                telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+        .new(
+            vim.tbl_extend("force", {
+                results_title = "Commits that affected this file (renamed files included)",
+                prompt_title = "Commit message",
+                finder = telescope_ags_finders.git_log_file_finder(bufnr),
+                previewer = telescope_ags_previewers.git_diff_commit_file_previewer({
+                    bufnr = bufnr,
+                }),
+                sorter = sorters.highlighter_only(),
+                attach_mappings = function(_, map)
+                    telescope_ags_mappings.open_diff_view_current_file_selected_commit(
+                        map
+                    )
+                    telescope_ags_mappings.show_entire_commit(map)
+                    telescope_ags_mappings.toggle_entry_value(map)
+                    telescope_ags_mappings.open_selected_commit_in_browser(map)
+                    telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
 
-                return true
-            end,
-        }, theme_opts))
+                    return true
+                end,
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 
@@ -215,17 +224,21 @@ M.checkout_reflog = function()
     local theme_opts = config.telescope_theme("checkout_reflog")
 
     pickers
-        .new(vim.tbl_extend("force", {
-            results_title = "Git Reflog, <CR> to checkout",
-            finder = finders.new_oneshot_job(
-                require("advanced_git_search.commands.find").reflog()
-            ),
-            sorter = sorters.get_fuzzy_file(),
-            attach_mappings = function(_, map)
-                telescope_ags_mappings.checkout_reflog_entry(map)
-                return true
-            end,
-        }, theme_opts))
+        .new(
+            vim.tbl_extend("force", {
+                results_title = "Git Reflog, <CR> to checkout",
+                finder = finders.new_oneshot_job(
+                    require("advanced_git_search.commands.find").reflog(),
+                    {}
+                ),
+                sorter = sorters.get_fuzzy_file(),
+                attach_mappings = function(_, map)
+                    telescope_ags_mappings.checkout_reflog_entry(map)
+                    return true
+                end,
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 
@@ -236,27 +249,30 @@ M.show_custom_functions = function()
     local theme_opts = config.telescope_theme("show_custom_functions")
 
     pickers
-        .new(vim.tbl_extend("force", {
-            prompt_title = "Git actions",
-            finder = finders.new_table(keys),
-            sorter = sorters.get_fuzzy_file(),
-            attach_mappings = function(_, map)
-                telescope_ags_mappings.omnimap(
-                    map,
-                    "<CR>",
-                    function(prompt_bufnr)
-                        actions.close(prompt_bufnr)
-                        local selection = action_state.get_selected_entry()
-                        global_picker.execute_git_function(
-                            selection.value,
-                            "telescope"
-                        )
-                    end
-                )
+        .new(
+            vim.tbl_extend("force", {
+                prompt_title = "Git actions",
+                finder = finders.new_table(keys),
+                sorter = sorters.get_fuzzy_file(),
+                attach_mappings = function(_, map)
+                    telescope_ags_mappings.omnimap(
+                        map,
+                        "<CR>",
+                        function(prompt_bufnr)
+                            actions.close(prompt_bufnr)
+                            local selection = action_state.get_selected_entry()
+                            global_picker.execute_git_function(
+                                selection.value,
+                                "telescope"
+                            )
+                        end
+                    )
 
-                return true
-            end,
-        }, theme_opts))
+                    return true
+                end,
+            }, theme_opts),
+            {}
+        )
         :find()
 end
 

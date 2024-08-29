@@ -1,6 +1,7 @@
 local uv = vim.loop
 local validate = vim.validate
 local utils = require("advanced_git_search.utils")
+local tbl = require("advanced_git_search.utils.table")
 
 local M = {}
 
@@ -125,7 +126,7 @@ M.path = (function()
     end
 
     local function path_join(...)
-        return table.concat(vim.tbl_flatten({ ... }), "/")
+        return table.concat(tbl.flatten({ ... }), "/")
     end
 
     -- Traverse the path calling cb along the way.
@@ -217,7 +218,7 @@ function M.search_ancestors(startpath, func)
 end
 
 function M.root_pattern(...)
-    local patterns = vim.tbl_flatten({ ... })
+    local patterns = tbl.flatten({ ... })
     local function matcher(path)
         for _, pattern in ipairs(patterns) do
             for _, p in
