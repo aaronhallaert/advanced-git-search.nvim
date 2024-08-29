@@ -12,7 +12,7 @@ local search_teardown = function(self)
 end
 
 local search_cb_jump = function(self, bufnr, query)
-    if not query then
+    if not query or query == "" then
         return
     end
 
