@@ -8,7 +8,7 @@ local utils = require("advanced_git_search.utils")
 local M = {}
 
 M.git_branches_finder = function()
-    return finders.new_oneshot_job(finder_commands.git_branches())
+    return finders.new_oneshot_job(finder_commands.git_branches(), {})
 end
 
 --- Returns all commits that changed the visual selection in the buffer
@@ -56,7 +56,7 @@ M.git_log_file_finder = function(bufnr)
 end
 
 M.changed_files_on_current_branch_finder = function()
-    return finders.new_oneshot_job(finder_commands.changed_on_branch())
+    return finders.new_oneshot_job(finder_commands.changed_on_branch(), {})
 end
 
 return M

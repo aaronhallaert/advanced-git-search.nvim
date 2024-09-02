@@ -1,5 +1,6 @@
 local file = require("advanced_git_search.utils.file")
 local git_utils = require("advanced_git_search.utils.git")
+local tbl = require("advanced_git_search.utils.table")
 
 -- Specify shell commands for each finders in table format
 local M = {}
@@ -56,7 +57,7 @@ M.git_log_content = function(prompt, author, bufnr)
         table.insert(command, filename)
     end
 
-    return vim.iter(command):flatten():totable()
+    return tbl.flatten(command)
 end
 
 ---@param prompt string|nil
@@ -84,7 +85,7 @@ M.git_log_file = function(prompt, author, bufnr)
     table.insert(command, "--follow")
     table.insert(command, filename)
 
-    return vim.iter(command):flatten():totable()
+    return tbl.flatten(command)
 end
 
 ---@param prompt string|nil
@@ -114,7 +115,7 @@ M.git_log_location = function(prompt, author, bufnr, start_line, end_line)
         table.insert(command, "--grep=" .. prompt)
     end
 
-    return vim.iter(command):flatten():totable()
+    return tbl.flatten(command)
 end
 
 M.changed_on_branch = function()
@@ -129,7 +130,8 @@ M.changed_on_branch = function()
         git_utils.base_branch(),
         "--relative",
     }
-    return vim.iter(command):flatten():totable()
+
+    return tbl.flatten(command)
 end
 
 return M

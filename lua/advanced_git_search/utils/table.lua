@@ -12,4 +12,16 @@ M.index_of = function(array, value)
     return -1
 end
 
+M.flatten = function(tbl)
+    local result
+
+    if vim.iter ~= nil then
+        result = vim.iter(tbl):flatten():totable()
+    else
+        result = vim.tbl_flatten(tbl)
+    end
+
+    return result
+end
+
 return M
