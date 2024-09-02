@@ -16,7 +16,6 @@ local search_cb_jump = function(self, bufnr, query)
         return
     end
 
-    vim.print("query: ", query)
     vim.api.nvim_buf_call(bufnr, function()
         pcall(vim.fn.matchdelete, self.state.hl_id, self.state.winid)
         vim.cmd("keepjumps norm! gg")
