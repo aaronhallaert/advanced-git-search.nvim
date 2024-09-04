@@ -1,5 +1,9 @@
 local config = require("advanced_git_search.utils.config")
 
+local function diffview_commit_parameter(commit_hash)
+    return commit_hash .. "~.." .. commit_hash
+end
+
 local M = {}
 
 ---General action: Open entire commit with fugitive or diffview
@@ -9,7 +13,7 @@ M.open_commit = function(commit_hash)
 
     if diff_plugin == "diffview" then
         vim.api.nvim_command(
-            ":DiffviewOpen -uno " .. commit_hash .. "~.." .. commit_hash
+            ":DiffviewOpen -uno " .. diffview_commit_parameter(commit_hash)
         )
     elseif diff_plugin == "fugitive" then
         vim.api.nvim_command(":Gedit " .. commit_hash)
@@ -25,14 +29,19 @@ M.open_diff_view = function(commit, file_name)
     if file_name ~= nil and file_name ~= "" then
         if diff_plugin == "diffview" then
             vim.api.nvim_command(
-                ":DiffviewOpen -uno " .. commit .. " -- " .. file_name
+                ":DiffviewOpen -uno "
+                    .. diffview_commit_parameter(commit)
+                    .. " -- "
+                    .. file_name
             )
         elseif diff_plugin == "fugitive" then
             vim.api.nvim_command(":Gvdiffsplit " .. commit .. ":" .. file_name)
         end
     else
         if diff_plugin == "diffview" then
-            vim.api.nvim_command(":DiffviewOpen -uno " .. commit)
+            vim.api.nvim_command(
+                ":DiffviewOpen -uno " .. diffview_commit_parameter(commit)
+            )
         elseif diff_plugin == "fugitive" then
             vim.api.nvim_command(":Gvdiffsplit " .. commit)
         end
