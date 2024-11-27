@@ -150,6 +150,7 @@ Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
     -- customize git diff in previewer
     -- e.g. flags such as { "--raw" }
     git_diff_flags = {},
+    git_log_flags = {},
     -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
     show_builtin_git_pickers = false,
     entry_default_author_or_date = "author", -- one of "author" or "date"

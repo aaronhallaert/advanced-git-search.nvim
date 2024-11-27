@@ -9,6 +9,7 @@ M.setup = function(ext_config)
         or "GBrowse {commit_hash}"
     ext_config.diff_plugin = ext_config.diff_plugin or "fugitive"
     ext_config.git_diff_flags = ext_config.git_diff_flags or {}
+    ext_config.git_log_flags = ext_config.git_log_flags or {}
     ext_config.show_builtin_git_pickers = ext_config.show_builtin_git_pickers
         or false
 
@@ -32,6 +33,21 @@ M.git_diff_flags = function()
     end
 
     return git_diff_flags
+end
+
+M.git_log_flags = function()
+    local git_log_flags = config["git_log_flags"] or {}
+
+    if type(git_log_flags) ~= "table" then
+        vim.notify(
+            "git_log_flags must be a table",
+            vim.log.levels.ERROR,
+            { title = "Advanced Git Search" }
+        )
+        return nil
+    end
+
+    return git_log_flags
 end
 
 local function get_keymaps()

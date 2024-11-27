@@ -1,4 +1,5 @@
 local utils = require("advanced_git_search.utils")
+local command_utils = require("advanced_git_search.commands.utils")
 local file = require("advanced_git_search.utils.file")
 local command_util = require("advanced_git_search.utils.command")
 
@@ -12,10 +13,21 @@ local all_commit_hashes = function()
 end
 
 local all_commit_hashes_touching_file = function(git_relative_file_path)
+    local git_log_cmd = {
+        "git",
+        "log",
+        "--follow",
+        "--pretty=format:'%H'",
+        "--",
+        git_relative_file_path,
+    }
+
+    git_log_cmd = command_utils.format_git_log_command(git_log_cmd)
+
     local command = "cd "
         .. file.git_dir()
-        .. " && git log --follow --pretty=format:'%H' -- "
-        .. git_relative_file_path
+        .. " && "
+        .. table.concat(git_log_cmd, " ")
 
     local output = command_util.execute(command)
     return utils.split_string(output, "\n")
