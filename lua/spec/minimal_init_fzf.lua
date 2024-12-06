@@ -54,6 +54,7 @@ function M.setup()
     require("advanced_git_search.fzf").setup({
         git_flags = { "-c", "delta.side-by-side=false" },
         git_diff_flags = {},
+        git_log_flags = {},
         show_builtin_git_pickers = true,
         diff_plugin = "diffview",
         entry_default_author_or_date = "author",

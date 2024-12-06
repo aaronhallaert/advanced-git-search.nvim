@@ -1,6 +1,7 @@
 local file = require("advanced_git_search.utils.file")
 local git_utils = require("advanced_git_search.utils.git")
 local tbl = require("advanced_git_search.utils.table")
+local command_utils = require("advanced_git_search.commands.utils")
 
 -- Specify shell commands for each finders in table format
 local M = {}
@@ -41,6 +42,8 @@ M.git_log_content = function(prompt, author, bufnr)
         "--format='%h %as %an _ %s'",
     }
 
+    command = command_utils.format_git_log_command(command)
+
     if author and author ~= "" and author ~= '""' then
         table.insert(command, "--author=" .. author)
     end
@@ -71,6 +74,8 @@ M.git_log_file = function(prompt, author, bufnr)
         "log",
         "--format='%h %as %an _ %s'",
     }
+
+    command = command_utils.format_git_log_command(command)
 
     if author and author ~= "" and author ~= '""' then
         table.insert(command, "--author=" .. author)
@@ -104,6 +109,8 @@ M.git_log_location = function(prompt, author, bufnr, start_line, end_line)
         "--no-patch",
         "--format='%h %as %an _ %s'",
     }
+
+    command = command_utils.format_git_log_command(command)
 
     if author and author ~= "" and author ~= '""' then
         table.insert(command, "--author=" .. author)
