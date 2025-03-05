@@ -11,7 +11,7 @@ end
 
 M.git_dir = function()
     return M.find_first_ancestor_dir_or_file(
-        M.path.sanitize(vim.fn.getcwd()),
+        M.path.sanitize(vim.uv.cwd()),
         ".git"
     )
 end
@@ -60,7 +60,7 @@ M.git_relative_path_to_relative_path = function(git_relative_path)
         M.path.sanitize(vim.fn.getcwd()),
         ".git"
     )
-    local project_dir = M.path.sanitize(vim.fn.getcwd())
+    local project_dir = M.path.sanitize(vim.uv.cwd())
 
     local absolute_path = git_dir .. "/" .. git_relative_path
     project_dir = utils.escape_chars(project_dir .. "/")

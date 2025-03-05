@@ -28,7 +28,7 @@ function M.setup()
     vim.opt.runtimepath:append(M.root())
     vim.opt.runtimepath:append("./")
 
-    vim.fn.delete(M.root(".tests"), "rf")
+    -- vim.fn.delete(M.root(".tests"), "rf")
     vim.opt.packpath = { M.root(".tests/site") }
 
     -- dependencies
@@ -89,6 +89,8 @@ function M.setup()
     --     diff_plugin = "diffview",
     --     entry_default_author_or_date = "author",
     -- })
+    --
+    require("advanced_git_search.snacks.pickers").search_log_content()
 
     print("Config complete...\n")
 end

@@ -6,7 +6,7 @@ local M = {}
 
 local empty_tree_commit = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
----@param bufnr number|nil
+---@param bufnr? number
 ---@param first_commit string
 ---@param second_commit string
 ---@return string|nil prev_name, string|nil curr_name
@@ -78,7 +78,7 @@ end
 --- @param first_commit string
 --- @param second_commit string
 --- @param prompt string
---- @param opts table|nil
+--- @param opts? {bufnr?: number}
 M.git_diff_content = function(first_commit, second_commit, prompt, opts)
     opts = opts or {}
 

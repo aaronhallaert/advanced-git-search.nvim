@@ -31,9 +31,9 @@ M.reflog = function()
     }
 end
 
----@param prompt string|nil
----@param author string|nil
----@param bufnr number|nil
+---@param prompt? string
+---@param author? string
+---@param bufnr? number
 ---@return table
 M.git_log_content = function(prompt, author, bufnr)
     local command = {
