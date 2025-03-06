@@ -1,2 +1,2 @@
 test:
-	nvim --headless -c "PlenaryBustedDirectory lua/spec { minimal_init = './lua/spec/minimal_init.lua', sequential = true }" -c qa
+	nvim --headless -u ./lua/spec/minimal_init.lua -c "PlenaryBustedDirectory lua/spec { sequential = true }" -c cquit

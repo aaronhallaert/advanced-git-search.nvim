@@ -3,10 +3,6 @@ local snack_transformers = require("advanced_git_search.snacks.transformers")
 local prompt_utils = require("advanced_git_search.utils.prompt")
 local utils = require("advanced_git_search.utils")
 
-if not table.unpack then
-    table.unpack = unpack -- Compatibility for Lua 5.1
-end
-
 local M = {}
 
 ---@param f_opts {bufnr?: number}
@@ -22,7 +18,7 @@ M.git_log_content = function(f_opts)
             prompt.author,
             f_opts.bufnr
         )
-        local args = { table.unpack(git_log, 2) }
+        local args = { unpack(git_log, 2) }
         return require("snacks.picker.source.proc").proc({
             opts,
             {
