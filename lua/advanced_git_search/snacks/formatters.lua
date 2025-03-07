@@ -22,4 +22,5 @@ M.git_log = function()
         return ret
     end
 end
+
 return M

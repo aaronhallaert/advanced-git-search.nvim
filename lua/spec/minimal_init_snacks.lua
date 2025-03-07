@@ -59,38 +59,14 @@ function M.setup()
         words = { enabled = false },
     })
 
-    vim.keymap.set("n", "<leader>gb", function()
-        Snacks.picker.git_branches()
-    end)
-    vim.keymap.set("n", "<leader>gl", function()
-        Snacks.picker.git_log()
-    end)
-    vim.keymap.set("n", "<leader>gL", function()
-        Snacks.picker.git_log_line()
-    end)
-    vim.keymap.set("n", "<leader>gs", function()
-        Snacks.picker.git_status()
-    end)
-    vim.keymap.set("n", "<leader>gS", function()
-        Snacks.picker.git_stash()
-    end)
-    vim.keymap.set("n", "<leader>gd", function()
-        Snacks.picker.git_diff()
-    end)
-    vim.keymap.set("n", "<leader>gf", function()
-        Snacks.picker.git_log_file()
-    end)
-
-    -- require("advanced_git_search.fzf").setup({
-    --     git_flags = { "-c", "delta.side-by-side=false" },
-    --     git_diff_flags = {},
-    --     git_log_flags = {},
-    --     show_builtin_git_pickers = true,
-    --     diff_plugin = "diffview",
-    --     entry_default_author_or_date = "author",
-    -- })
-    --
-    require("advanced_git_search.snacks.pickers").search_log_content()
+    require("advanced_git_search.snacks").setup({
+        git_flags = { "-c", "delta.side-by-side=false" },
+        git_diff_flags = {},
+        git_log_flags = {},
+        show_builtin_git_pickers = true,
+        diff_plugin = "diffview",
+        entry_default_author_or_date = "author",
+    })
 
     print("Config complete...\n")
 end

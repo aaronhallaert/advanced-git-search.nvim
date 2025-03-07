@@ -2,7 +2,7 @@ local M = {}
 
 local config = require("advanced_git_search.utils.config")
 
----@param finder_plugin "telescope"|"fzf_lua"
+---@param finder_plugin "telescope"|"fzf_lua"|"snacks"
 ---@return table
 local custom_git_functions = function(finder_plugin)
     local pickers_table = {}
@@ -10,6 +10,8 @@ local custom_git_functions = function(finder_plugin)
         pickers_table = require("advanced_git_search.telescope.pickers")
     elseif finder_plugin == "fzf_lua" then
         pickers_table = require("advanced_git_search.fzf.pickers")
+    elseif finder_plugin == "snacks" then
+        pickers_table = require("advanced_git_search.snacks.pickers")
     end
 
     return {
@@ -44,7 +46,7 @@ local custom_git_functions = function(finder_plugin)
     }
 end
 
----@param finder_plugin "telescope"|"fzf_lua"
+---@param finder_plugin "telescope"|"fzf_lua"|"snacks"
 ---@return table
 local builtin_git_functions = function(finder_plugin)
     local builtin_functions = {}
@@ -52,12 +54,20 @@ local builtin_git_functions = function(finder_plugin)
         builtin_functions = require("telescope.builtin")
     elseif finder_plugin == "fzf_lua" then
         builtin_functions = require("fzf-lua")
+    elseif finder_plugin == "snacks" then
+        builtin_functions = require("snacks").picker
     end
 
     return {
         {
             value = "Git commits [builtin]",
-            func = builtin_functions.git_commits,
+            func = function()
+                if finder_plugin == "snacks" then
+                    builtin_functions.git_log()
+                else
+                    builtin_functions.git_commits()
+                end
+            end,
         },
         {
             value = "Git branches [builtin]",
@@ -82,7 +92,7 @@ local function map_item(git_functions_table, f)
     return t
 end
 
----@param finder_plugin "telescope"|"fzf_lua"
+---@param finder_plugin "telescope"|"fzf_lua"|"snacks"
 ---@return table
 local git_functions_table = function(finder_plugin)
     local t = {}
@@ -100,7 +110,7 @@ local git_functions_table = function(finder_plugin)
 end
 
 ---@param value any
----@param finder_plugin "telescope"|"fzf_lua"
+---@param finder_plugin "telescope"|"fzf_lua"|"snacks"
 M.execute_git_function = function(value, finder_plugin)
     for _, v in pairs(git_functions_table(finder_plugin)) do
         if v["value"] == value then
@@ -110,7 +120,7 @@ M.execute_git_function = function(value, finder_plugin)
     end
 end
 
----@param finder_plugin "telescope"|"fzf_lua"
+---@param finder_plugin "telescope"|"fzf_lua"|"snacks"
 ---@return table
 M.keys = function(finder_plugin)
     return map_item(git_functions_table(finder_plugin), function(v)
