@@ -34,6 +34,13 @@ describe("parse prompt", function()
         assert.are.same("aaron", result.author)
     end)
 
+    it("extracts author only with spaces", function()
+        local result = prompt.parse("@aaron hallaert")
+
+        assert.are.same(nil, result.query)
+        assert.are.same("aaron hallaert", result.author)
+    end)
+
     it("extracts author only with prefix whitespace", function()
         local result = prompt.parse(" @aaron")
 
