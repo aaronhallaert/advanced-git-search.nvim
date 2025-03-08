@@ -3,8 +3,41 @@ local snack_previewers = require("advanced_git_search.snacks.previewers")
 local snack_formatters = require("advanced_git_search.snacks.formatters")
 local snack_finders = require("advanced_git_search.snacks.finders")
 local global_picker = require("advanced_git_search.global_picker")
+local snacks_actions = require("advanced_git_search.snacks.actions")
 
 local M = {}
+
+---@return table
+local commit_actions = function()
+    return {
+        win = {
+            input = {
+                keys = {
+                    [snacks_actions.open_commit_in_browser.key] = {
+                        "open_commit_in_browser",
+                        mode = { "n", "i" },
+                    },
+                    [snacks_actions.copy_commit_hash.key] = {
+                        "copy_commit_hash",
+                        mode = { "n", "i" },
+                    },
+                    [snacks_actions.show_entire_commit.key] = {
+                        "show_entire_commit",
+                        mode = { "n", "i" },
+                    },
+                },
+            },
+        },
+        actions = {
+            open_commit_in_browser = snacks_actions.open_commit_in_browser.action,
+            copy_commit_hash = snacks_actions.copy_commit_hash.action,
+            show_entire_commit = snacks_actions.show_entire_commit.action,
+            confirm = snacks_actions.open_diff_buffer_with_selected_commit(
+                vim.fn.bufnr()
+            ).action,
+        },
+    }
+end
 
 M.search_log_content = function()
     Snacks.picker.pick(nil, {
@@ -12,6 +45,8 @@ M.search_log_content = function()
         format = snack_formatters.git_log(),
         preview = snack_previewers.git_diff_content(),
         live = true,
+        actions = commit_actions().actions,
+        win = commit_actions().win,
     })
 end
 
@@ -22,6 +57,8 @@ M.search_log_content_file = function()
         finder = snack_finders.git_log_content({ bufnr = bufnr }),
         format = snack_formatters.git_log(),
         preview = snack_previewers.git_diff_content({ bufnr = bufnr }),
+        actions = commit_actions().actions,
+        win = commit_actions().win,
         live = true,
     })
 end
@@ -44,6 +81,8 @@ M.diff_commit_line = function()
         finder = snack_finders.git_log_location(bufnr, s_start, s_end),
         format = snack_formatters.git_log(),
         preview = snack_previewers.git_diff_file({ bufnr = bufnr }),
+        actions = commit_actions().actions,
+        win = commit_actions().win,
         live = true,
     })
 end
@@ -55,6 +94,8 @@ M.diff_commit_file = function()
         finder = snack_finders.git_log_file(bufnr),
         format = snack_formatters.git_log(),
         preview = snack_previewers.git_diff_file({ bufnr = bufnr }),
+        actions = commit_actions().actions,
+        win = commit_actions().win,
         live = true,
     })
 end
@@ -65,6 +106,9 @@ M.diff_branch_file = function()
     Snacks.picker.pick(nil, {
         finder = snack_finders.git_branches(),
         preview = snack_previewers.git_diff_branch({ bufnr = bufnr }),
+        actions = {
+            confirm = snacks_actions.diff_buffer_with_branch(bufnr).action,
+        },
     })
 end
 
