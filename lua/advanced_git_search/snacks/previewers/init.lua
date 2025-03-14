@@ -1,6 +1,7 @@
 local utils = require("advanced_git_search.utils")
 local git_utils = require("advanced_git_search.utils.git")
 local preview_commands = require("advanced_git_search.commands.preview")
+local ns = vim.api.nvim_create_namespace("ags_snacks_preview")
 
 local M = {}
 
@@ -25,6 +26,29 @@ M.git_diff_content = function(opts)
 
         require("snacks.picker.preview").cmd(git_log_preview, preview_ctx, {
             ft = "diff",
+            add = function(text, l)
+                vim.api.nvim_buf_set_lines(
+                    preview_ctx.buf,
+                    l - 1,
+                    l,
+                    false,
+                    { text }
+                )
+                local col = string.find(text, utils.escape_chars(prompt))
+                if prompt and prompt ~= "" and prompt ~= '""' and col then
+                    vim.api.nvim_buf_set_extmark(
+                        preview_ctx.buf,
+                        ns,
+                        l - 1,
+                        col - 1,
+                        {
+                            end_row = l - 1,
+                            end_col = col - 1 + string.len(prompt),
+                            hl_group = "SnacksPickerSearch",
+                        }
+                    )
+                end
+            end,
         })
     end
 end
