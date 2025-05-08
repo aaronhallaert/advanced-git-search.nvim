@@ -124,6 +124,14 @@ M.show_custom_functions = function()
     -- Snacks.picker.
     Snacks.picker.pick(nil, {
         items = items,
+        layout = {
+            preview = false,
+            layout = {
+                height = math.floor(
+                    math.min(vim.o.lines * 0.8 - 10, #items + 2) + 0.5
+                ),
+            },
+        },
         win = {
             input = {
                 keys = {
