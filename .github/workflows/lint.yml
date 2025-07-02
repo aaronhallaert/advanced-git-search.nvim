@@ -7,8 +7,8 @@ jobs:
         name: Luacheck
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Luacheck linter
-              uses: lunarmodules/luacheck@v0
+              uses: lunarmodules/luacheck@v1
               with:
-                  args: lua/ --globals vim
+                  args: lua/ --globals vim Snacks
