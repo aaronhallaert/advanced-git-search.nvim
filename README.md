@@ -197,6 +197,7 @@ Enable `show_builtin_git_pickers` to additionally show builtin git pickers.
 
 <details>
 <summary>Lazy</summary>
+
 To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
@@ -255,6 +256,7 @@ use({
 
 <details>
 <summary>Lazy</summary>
+
 To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
 
 ```lua
