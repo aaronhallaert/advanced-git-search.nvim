@@ -298,6 +298,52 @@ use({
 </details>
 
 
+### Snacks
+
+<details>
+<summary>Lazy</summary>
+
+To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies). Also see [lua/spec/minimal_init_snacks.lua](./lua/spec/minimal_init_snacks.lua) for an up-to-date version.
+
+```lua
+{
+    "aaronhallaert/advanced-git-search.nvim",
+    cmd = { "AdvancedGitSearch" },
+    config = function()
+        require("advanced_git_search.snacks").setup{
+            -- Insert Config here
+        }
+    end,
+    dependencies = {
+      "folke/snacks.nvim"
+    },
+}
+```
+
+</details>
+
+<details>
+<summary>Packer</summary>
+
+To complete this snippet, see [Config](#Config) and [Dependencies](#Dependencies).
+
+```lua
+use({
+    "aaronhallaert/advanced-git-search.nvim",
+    config = function()
+        require("advanced_git_search.snacks").setup{
+                -- Insert Config here
+            }
+        }
+    end,
+    requires = {
+        -- Insert Dependencies here
+    },
+})
+```
+</details>
+
+
 ### Prerequisites
 
 - git
