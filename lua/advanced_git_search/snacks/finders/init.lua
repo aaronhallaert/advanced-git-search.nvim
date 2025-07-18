@@ -87,7 +87,6 @@ M.git_branches = function()
             {
                 cmd = git_branches[1],
                 args = { unpack(git_branches, 2) },
-                transform = snack_transformers.git_branches(),
             },
         }, ctx)
     end

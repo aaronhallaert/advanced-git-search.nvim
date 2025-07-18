@@ -105,6 +105,7 @@ M.diff_branch_file = function()
 
     Snacks.picker.pick(nil, {
         finder = snack_finders.git_branches(),
+        format = snack_formatters.git_branches(),
         preview = snack_previewers.git_diff_branch({ bufnr = bufnr }),
         actions = {
             confirm = snacks_actions.diff_buffer_with_branch(bufnr).action,
