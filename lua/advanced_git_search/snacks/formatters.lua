@@ -23,4 +23,13 @@ M.git_log = function()
     end
 end
 
+---@return snacks.picker.format
+M.git_branches = function()
+    return function(item, _)
+        local ret = {} ---@type snacks.picker.Highlight[]
+        ret[#ret + 1] = { item.text, "SnacksPickerGitCommit" }
+        return ret
+    end
+end
+
 return M
