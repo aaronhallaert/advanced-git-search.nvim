@@ -8,7 +8,8 @@ M.git_log = function()
         local mode = config.entry_default_author_or_date()
 
         local ret = {} ---@type snacks.picker.Highlight[]
-        ret[#ret + 1] = { picker.opts.icons.git.commit, "SnacksPickerGitCommit" }
+        ret[#ret + 1] =
+            { picker.opts.icons.git.commit, "SnacksPickerGitCommit" }
         ret[#ret + 1] = {
             a(item.commit, 8, { truncate = true }),
             "SnacksPickerGitCommit",

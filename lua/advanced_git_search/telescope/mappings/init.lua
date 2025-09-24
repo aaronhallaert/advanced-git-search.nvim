@@ -106,6 +106,41 @@ M.copy_commit_hash_to_clipboard = function(map)
     omnimap(map, config.get_keymap("copy_commit_hash"), copy_commit_hash)
 end
 
+-- SMART: <C-p> single-or-range patch (uses multi-selection if 2+)
+local copy_patch_smart = function(opts)
+    return function(prompt_bufnr)
+        local picker = action_state.get_current_picker(prompt_bufnr)
+        local multi = picker.get_multi_selection
+                and picker:get_multi_selection()
+            or {}
+        if multi and #multi >= 2 then
+            local first_hash = multi[1].opts.commit_hash
+            local last_hash = multi[#multi].opts.commit_hash
+
+            -- Ensure commits are in chronological order (older..newer)
+            local start_hash, end_hash =
+                git_utils.order_commits_chronologically(first_hash, last_hash)
+
+            global_actions.copy_range_patch_to_clipboard(
+                start_hash,
+                end_hash,
+                opts and opts.bufnr
+            )
+            return
+        end
+        -- fallback: single selected entry
+        local selection = action_state.get_selected_entry()
+        local commit_hash = selection.opts.commit_hash
+
+        global_actions.copy_patch_to_clipboard(commit_hash, opts and opts.bufnr)
+    end
+end
+
+--- copy commit patch to clipboard with <C-p>
+M.copy_commit_patch_to_clipboard = function(map, opts)
+    omnimap(map, config.get_keymap("copy_commit_patch"), copy_patch_smart(opts))
+end
+
 -------------------------------------------------------------------------------
 local checkout = function(prompt_bufnr)
     actions.close(prompt_bufnr)

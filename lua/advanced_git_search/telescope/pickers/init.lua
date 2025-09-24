@@ -108,6 +108,10 @@ M.diff_commit_line = function()
                     )
                     telescope_ags_mappings.open_selected_commit_in_browser(map)
                     telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                    telescope_ags_mappings.copy_commit_patch_to_clipboard(
+                        map,
+                        { bufnr = bufnr }
+                    )
                     telescope_ags_mappings.show_entire_commit(map)
                     telescope_ags_mappings.toggle_entry_value(map)
                     return true
@@ -139,6 +143,7 @@ M.search_log_content = function()
                     )
                     telescope_ags_mappings.open_selected_commit_in_browser(map)
                     telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                    telescope_ags_mappings.copy_commit_patch_to_clipboard(map)
                     telescope_ags_mappings.show_entire_commit(map)
                     telescope_ags_mappings.toggle_entry_value(map)
                     return true
@@ -155,6 +160,7 @@ M.search_log_content_file = function()
     -- local relative_file_name = vim.fn.expand("%:~:.")
 
     local theme_opts = config.telescope_theme("search_log_content_file")
+    local bufnr = vim.fn.bufnr()
 
     -- git log -L741,751:'app/models/patients/patient.rb' \
     -- --format='%C(auto)%h \t %as \t %C(green)%an _ %Creset %s'
@@ -164,10 +170,10 @@ M.search_log_content_file = function()
                 results_title = "Commits",
                 prompt_title = "Git log content (added, removed or updated text in this file)",
                 finder = telescope_ags_finders.git_log_content_finder({
-                    bufnr = vim.fn.bufnr(),
+                    bufnr = bufnr,
                 }),
                 previewer = telescope_ags_previewers.git_diff_content_previewer({
-                    bufnr = vim.fn.bufnr(),
+                    bufnr = bufnr,
                 }),
                 attach_mappings = function(_, map)
                     telescope_ags_mappings.open_diff_view_current_file_selected_commit(
@@ -175,6 +181,10 @@ M.search_log_content_file = function()
                     )
                     telescope_ags_mappings.open_selected_commit_in_browser(map)
                     telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                    telescope_ags_mappings.copy_commit_patch_to_clipboard(
+                        map,
+                        { bufnr = bufnr }
+                    )
                     telescope_ags_mappings.show_entire_commit(map)
                     telescope_ags_mappings.toggle_entry_value(map)
 
@@ -210,6 +220,10 @@ M.diff_commit_file = function()
                     telescope_ags_mappings.toggle_entry_value(map)
                     telescope_ags_mappings.open_selected_commit_in_browser(map)
                     telescope_ags_mappings.copy_commit_hash_to_clipboard(map)
+                    telescope_ags_mappings.copy_commit_patch_to_clipboard(
+                        map,
+                        { bufnr = bufnr }
+                    )
 
                     return true
                 end,

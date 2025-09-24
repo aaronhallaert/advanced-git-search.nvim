@@ -55,6 +55,7 @@ local function get_keymaps()
         toggle_date_author = "<C-w>",
         open_commit_in_browser = "<C-o>",
         copy_commit_hash = "<C-y>",
+        copy_commit_patch = "<C-p>",
         show_entire_commit = "<C-e>",
     }
     keymaps = vim.tbl_extend("force", keymaps, config["keymaps"] or {})

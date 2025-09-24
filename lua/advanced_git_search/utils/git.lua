@@ -192,4 +192,54 @@ M.current_branch = function()
     return string.gsub(output, "\n", "")
 end
 
+M.order_commits_chronologically = function(a, b)
+    local repo = file.git_dir()
+
+    local function run(cmd)
+        local r = vim.system(cmd):wait()
+        return r.code, (r.stdout or ""):gsub("%s+$", "")
+    end
+
+    local function is_ancestor(x, y)
+        local code =
+            run({ "git", "-C", repo, "merge-base", "--is-ancestor", x, y })
+        return code == 0
+    end
+
+    if is_ancestor(a, b) then
+        return a, b
+    end
+    if is_ancestor(b, a) then
+        return b, a
+    end
+
+    -- Divergent: use topo order (first visited is "newer")
+    local code, first = run({
+        "git",
+        "-C",
+        repo,
+        "rev-list",
+        "--topo-order",
+        "--max-count=1",
+        a,
+        b,
+    })
+    if code == 0 and first ~= "" then
+        return (first == a) and b or a, (first == a) and a or b
+    end
+
+    -- Final fallback: Git’s date-aware order (parents before children)
+    local _, first2 = run({
+        "git",
+        "-C",
+        repo,
+        "rev-list",
+        "--date-order",
+        "--max-count=1",
+        a,
+        b,
+    })
+    return (first2 == a) and b or a, (first2 == a) and a or b
+end
+
 return M
