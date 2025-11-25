@@ -19,14 +19,14 @@ M.git_log_content = function(f_opts)
             f_opts.bufnr
         )
         local args = { unpack(git_log, 2) }
-        return require("snacks.picker.source.proc").proc({
-            opts,
-            {
+        return require("snacks.picker.source.proc").proc(
+            vim.tbl_extend("force", opts, {
                 cmd = git_log[1],
                 args = args,
                 transform = snack_transformers.git_log(),
-            },
-        }, ctx)
+            }),
+            ctx
+        )
     end
 end
 
@@ -45,14 +45,14 @@ M.git_log_location = function(bufnr, s_start, s_end)
             s_start,
             s_end
         )
-        return require("snacks.picker.source.proc").proc({
-            opts,
-            {
+        return require("snacks.picker.source.proc").proc(
+            vim.tbl_extend("force", opts, {
                 cmd = git_log[1],
                 args = { unpack(git_log, 2) },
                 transform = snack_transformers.git_log(),
-            },
-        }, ctx)
+            }),
+            ctx
+        )
     end
 end
 
@@ -67,14 +67,14 @@ M.git_log_file = function(bufnr)
             prompt.author,
             bufnr
         )
-        return require("snacks.picker.source.proc").proc({
-            opts,
-            {
+        return require("snacks.picker.source.proc").proc(
+            vim.tbl_extend("force", opts, {
                 cmd = git_log[1],
                 args = { unpack(git_log, 2) },
                 transform = snack_transformers.git_log(),
-            },
-        }, ctx)
+            }),
+            ctx
+        )
     end
 end
 
@@ -82,13 +82,13 @@ end
 M.git_branches = function()
     return function(opts, ctx)
         local git_branches = finder_commands.git_branches()
-        return require("snacks.picker.source.proc").proc({
-            opts,
-            {
+        return require("snacks.picker.source.proc").proc(
+            vim.tbl_extend("force", opts, {
                 cmd = git_branches[1],
                 args = { unpack(git_branches, 2) },
-            },
-        }, ctx)
+            }),
+            ctx
+        )
     end
 end
 
