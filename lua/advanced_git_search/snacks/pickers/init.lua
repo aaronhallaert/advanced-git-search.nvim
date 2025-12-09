@@ -154,4 +154,20 @@ M.show_custom_functions = function()
     })
 end
 
+M.changed_on_branch = function()
+    vim.notify(
+        "This picker is not yet implemented for snacks.nvim",
+        vim.log.levels.WARN,
+        { title = "Advanced Git Search" }
+    )
+end
+
+M.checkout_reflog = function()
+    vim.notify(
+        "This picker is not yet implemented for snacks.nvim",
+        vim.log.levels.WARN,
+        { title = "Advanced Git Search" }
+    )
+end
+
 return M
