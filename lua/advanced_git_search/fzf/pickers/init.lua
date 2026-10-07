@@ -29,6 +29,12 @@ M.search_log_content = function()
     }
 
     require("fzf-lua").fzf_live(function(query)
+        if type(query) == "table" then
+            query = query[1]
+        end
+
+        query = query or ""
+
         return fzf_finders.git_log_content_finder(query, nil)
     end, opts)
 end
@@ -60,6 +66,12 @@ M.search_log_content_file = function()
     }
 
     require("fzf-lua").fzf_live(function(query)
+        if type(query) == "table" then
+            query = query[1]
+        end
+
+        query = query or ""
+
         return fzf_finders.git_log_content_finder(query, bufnr)
     end, opts)
 end
@@ -99,6 +111,12 @@ M.diff_commit_line = function()
     }
 
     require("fzf-lua").fzf_live(function(query)
+        if type(query) == "table" then
+            query = query[1]
+        end
+
+        query = query or ""
+
         return fzf_finders.git_log_location_finder(query, bufnr, s_start, s_end)
     end, opts)
 end
@@ -127,6 +145,12 @@ M.diff_commit_file = function()
     }
 
     require("fzf-lua").fzf_live(function(query)
+        if type(query) == "table" then
+            query = query[1]
+        end
+
+        query = query or ""
+
         return fzf_finders.git_log_file_finder(query, bufnr)
     end, opts)
 end

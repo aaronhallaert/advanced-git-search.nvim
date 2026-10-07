@@ -11,7 +11,7 @@ local M = {}
 M.git_diff_content_previewer = function(opts)
     opts = opts or { bufnr = nil }
 
-    return fzf_lua.shell.raw_preview_action_cmd(function(items)
+    return fzf_lua.shell.stringify_cmd(function(items)
         local selection = items[1]
         local hash = string.sub(selection, 1, 7)
 
@@ -39,11 +39,11 @@ M.git_diff_content_previewer = function(opts)
         end
 
         return preview_command
-    end)
+    end, {}, "{+}")
 end
 
 M.git_diff_file_previewer = function(bufnr)
-    return fzf_lua.shell.raw_preview_action_cmd(function(items)
+    return fzf_lua.shell.stringify_cmd(function(items)
         local selection = items[1]
         local commit_hash = string.sub(selection, 1, 7)
         local prev_commit = git_utils.previous_commit_hash(commit_hash)
@@ -52,28 +52,29 @@ M.git_diff_file_previewer = function(bufnr)
             preview_commands.git_diff_file(prev_commit, commit_hash, bufnr),
             " "
         )
-    end)
+    end, {}, "{+}")
 end
 
 M.git_diff_branch_file_previewer = function(bufnr)
-    return fzf_lua.shell.raw_preview_action_cmd(function(items)
+    return fzf_lua.shell.stringify_cmd(function(items)
         local branch = items[1]
 
         return table.concat(
             preview_commands.git_diff_branch(branch, bufnr),
             " "
         )
-    end)
+    end, {}, "{+}")
 end
 
 M.git_diff_base_branch = function()
-    return fzf_lua.shell.raw_preview_action_cmd(function(items)
+    return fzf_lua.shell.stringify_cmd(function(items)
         local filename = items[1]
 
         return table.concat(
             preview_commands.git_diff_base_branch(filename),
             " "
         )
-    end)
+    end, {}, "{+}")
 end
+
 return M
